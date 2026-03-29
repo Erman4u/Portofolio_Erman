@@ -3,11 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Erman Saputra | Web Developer</title>
-    <meta name="description" content="Portofolio jasa pembuatan website Erman Saputra. Modern, profesional, dan interaktif.">
+    <title>Erman Saputra | Digital Architect</title>
+    <meta name="description" content="Portofolio Erman Saputra — Digital Architect. UI/UX, Website, Data Science, dan Jaringan Komputer.">
     <link rel="stylesheet" href="style.css">
     <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
     <link rel="icon" type="image/png" href="https://via.placeholder.com/32x32.png?text=E">
+    <!-- Lucide Icons CDN -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- html2pdf for CV download -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 </head>
 <body>
     <!-- Background Effects -->
@@ -20,18 +24,21 @@
     <!-- Header -->
     <header class="main-header" id="mainHeader">
         <div class="container header-container">
-            <h1 class="logo glow-pink">P1</h1>
+            <h1 class="logo glow-pink">
+                <i data-lucide="terminal" class="logo-icon"></i> E.S
+            </h1>
             <nav>
                 <ul>
-                    <li><a href="#about" class="nav-btn">ABOUT</a></li>
-                    <li><a href="#skills" class="nav-btn">SKILLS</a></li>
-                    <li><a href="#projects" class="nav-btn">QUESTS</a></li>
-                    <li><a href="#terminal" class="nav-btn">TERMINAL</a></li>
-                    <li><a href="#testimonials" class="nav-btn">REVIEWS</a></li>
-                    <li><a href="#contact" class="nav-btn">CONTACT</a></li>
+                    <li><a href="#about" class="nav-btn"><i data-lucide="user" class="nav-icon"></i> ABOUT</a></li>
+                    <li><a href="#skills" class="nav-btn"><i data-lucide="zap" class="nav-icon"></i> SKILLS</a></li>
+                    <li><a href="#projects" class="nav-btn"><i data-lucide="folder-open" class="nav-icon"></i> PORTFOLIO</a></li>
+                    <li><a href="#certifications" class="nav-btn"><i data-lucide="award" class="nav-icon"></i> CERTS</a></li>
+                    <li><a href="#contact" class="nav-btn"><i data-lucide="send" class="nav-icon"></i> CONTACT</a></li>
                 </ul>
             </nav>
-            <button id="themeToggle" class="theme-toggle-btn" title="Toggle Dark/Light Mode">🌙</button>
+            <button id="themeToggle" class="theme-toggle-btn" title="Toggle Dark/Light Mode">
+                <i data-lucide="moon" id="themeIcon"></i>
+            </button>
         </div>
     </header>
 
@@ -43,130 +50,209 @@
                     <img src="img/Foto.png" alt="Erman Saputra" class="hero-photo">
                 </div>
                 <h2 class="glitch-text" data-text="ERMAN SAPUTRA">ERMAN SAPUTRA</h2>
-                <h3 class="glow-cyan subtitle">WEB DEVELOPER SERVICES</h3>
+                <h3 class="glow-cyan subtitle">
+                    <i data-lucide="code-2" style="width:16px;height:16px;vertical-align:middle;margin-right:6px;"></i>
+                    DIGITAL ARCHITECT — READY FOR ANY QUEST
+                </h3>
                 <p class="desc-text" id="typing-target"></p>
                 <div class="hero-actions">
-                    <a href="#projects" class="btn primary-btn neon-btn">► VIEW PORTFOLIO</a>
-                    <a href="#" id="downloadCvBtn" class="btn outline-btn" download>📄 DOWNLOAD CV</a>
+                    <a href="#projects" class="btn primary-btn neon-btn">
+                        <i data-lucide="eye" style="width:14px;height:14px;vertical-align:middle;margin-right:6px;"></i>
+                        VIEW PORTFOLIO
+                    </a>
+                    <button type="button" id="downloadCvBtn" class="btn outline-btn">
+                        <i data-lucide="download" style="width:14px;height:14px;vertical-align:middle;margin-right:6px;"></i>
+                        DOWNLOAD CV
+                    </button>
                 </div>
             </div>
         </section>
 
         <!-- About Section -->
         <section id="about" class="cyber-box reveal">
-            <h2 class="section-title glow-pink">FILE: STATS.DAT</h2>
+            <h2 class="section-title glow-pink">
+                <i data-lucide="file-text" style="width:18px;height:18px;vertical-align:middle;margin-right:8px;"></i>
+                FILE: STATS.DAT
+            </h2>
             <div class="content-wrapper">
                 <div class="status-grid">
-                    <div class="status-item"><span class="label">NICKNAME:</span> ERMAN SAPUTRA</div>
-                    <div class="status-item"><span class="label">CLASS:</span> FULLSTACK VANGUARD</div>
-                    <div class="status-item"><span class="label">SYS_LEVEL:</span> 99</div>
-                    <div class="status-item"><span class="label">UPTIME:</span> 99.9%</div>
+                    <div class="status-item">
+                        <i data-lucide="user" class="stat-icon"></i>
+                        <span class="label">NICKNAME:</span> ERMAN SAPUTRA
+                    </div>
+                    <div class="status-item">
+                        <i data-lucide="shield" class="stat-icon"></i>
+                        <span class="label">CLASS:</span> DIGITAL ARCHITECT
+                    </div>
+                    <div class="status-item">
+                        <i data-lucide="trending-up" class="stat-icon"></i>
+                        <span class="label">SYS_LEVEL:</span> 99
+                    </div>
+                    <div class="status-item">
+                        <i data-lucide="activity" class="stat-icon"></i>
+                        <span class="label">UPTIME:</span> 99.9%
+                    </div>
                 </div>
                 <div class="about-text-box">
-                    <p class="modern-text">Halo! Saya adalah seorang pengembang website profesional yang berfokus pada pengalaman pengguna yang menakjubkan dan estetika modern. Dari landing page yang elegan hingga web aplikasi dengan sistem yang kompleks, saya siap menyelesaikan setiap <strong>Quest</strong> digital Anda.</p>
+                    <p class="modern-text">Halo! Saya adalah seorang Digital Architect yang merancang ekosistem digital melalui UI/UX Design, Web Development, Data Science, dan Jaringan Komputer. Dari landing page yang elegan, analisis data yang tajam, hingga konfigurasi jaringan yang solid — saya siap menyelesaikan setiap <strong>Quest</strong> digital Anda.</p>
                 </div>
             </div>
         </section>
 
         <!-- Education Section -->
         <section id="education" class="reveal" style="margin-bottom: 60px;">
-            <h2 class="section-title glow-pink text-center">ACADEMIC RECORD</h2>
+            <h2 class="section-title glow-pink text-center">
+                <i data-lucide="graduation-cap" style="width:18px;height:18px;vertical-align:middle;margin-right:8px;"></i>
+                ACADEMIC RECORD
+            </h2>
             <div class="cyber-box text-center" style="max-width: 600px; margin: 0 auto; padding: 30px;">
                 <h3 class="glow-cyan" style="font-size: 1.2rem; margin-top: 0; letter-spacing: 2px; line-height: 1.6;">S1 INFORMATIKA</h3>
                 <p class="modern-text" style="color: #fff; font-size: 1.1rem; border-top: 1px dashed var(--neon-cyan); padding-top: 15px; margin-bottom: 5px;">UNIVERSITAS AMIKOM YOGYAKARTA</p>
-                <div class="skill-badge modern-badge" style="display: inline-block; margin-top: 15px; border-color: var(--neon-pink);">TRAINING <span class="lvl" style="color:var(--neon-pink);">COMPLETE</span></div>
+                <div class="skill-badge modern-badge" style="display: inline-block; margin-top: 15px; border-color: var(--neon-pink);">
+                    <i data-lucide="check-circle" style="width:12px;height:12px;vertical-align:middle;margin-right:4px;"></i>
+                    TRAINING <span class="lvl" style="color:var(--neon-pink);">COMPLETE</span>
+                </div>
             </div>
         </section>
 
         <!-- Skills Section -->
         <section id="skills" class="reveal">
-            <h2 class="section-title glow-cyan text-center">EQUIPPED SKILLS</h2>
+            <h2 class="section-title glow-cyan text-center">
+                <i data-lucide="cpu" style="width:18px;height:18px;vertical-align:middle;margin-right:8px;"></i>
+                EQUIPPED SKILLS
+            </h2>
             <div class="skills-list">
-                <div class="skill-badge modern-badge">HTML/CSS <span class="lvl">LV.MAX</span></div>
-                <div class="skill-badge modern-badge">JavaScript <span class="lvl">LV.80</span></div>
-                <div class="skill-badge modern-badge">React.js <span class="lvl">LV.75</span></div>
-                <div class="skill-badge modern-badge">Apps Script <span class="lvl">LV.90</span></div>
-                <div class="skill-badge modern-badge">UI/UX <span class="lvl">LV.85</span></div>
+                <div class="skill-badge modern-badge"><i data-lucide="code" class="skill-icon"></i> HTML/CSS <span class="lvl">LV.MAX</span></div>
+                <div class="skill-badge modern-badge"><i data-lucide="braces" class="skill-icon"></i> JavaScript <span class="lvl">LV.80</span></div>
+                <div class="skill-badge modern-badge"><i data-lucide="atom" class="skill-icon"></i> React.js <span class="lvl">LV.75</span></div>
+                <div class="skill-badge modern-badge"><i data-lucide="database" class="skill-icon"></i> Apps Script <span class="lvl">LV.90</span></div>
+                <div class="skill-badge modern-badge"><i data-lucide="palette" class="skill-icon"></i> UI/UX <span class="lvl">LV.85</span></div>
+                <div class="skill-badge modern-badge"><i data-lucide="bar-chart-3" class="skill-icon"></i> Data Science <span class="lvl">LV.78</span></div>
+                <div class="skill-badge modern-badge"><i data-lucide="network" class="skill-icon"></i> Networking <span class="lvl">LV.80</span></div>
+                <div class="skill-badge modern-badge"><i data-lucide="figma" class="skill-icon"></i> Figma <span class="lvl">LV.82</span></div>
             </div>
         </section>
 
         <!-- Projects Section -->
         <section id="projects" class="reveal">
-            <h2 class="section-title glow-pink text-center" style="margin-top: 60px;">PORTFOLIO ARCHIVE</h2>
+            <h2 class="section-title glow-pink text-center" style="margin-top: 60px;">
+                <i data-lucide="archive" style="width:18px;height:18px;vertical-align:middle;margin-right:8px;"></i>
+                PORTFOLIO ARCHIVE
+            </h2>
+
+            <!-- Category Tabs -->
+            <div class="category-tabs">
+                <button class="category-tab active" data-category="all">
+                    <i data-lucide="layout-grid" style="width:14px;height:14px;"></i> ALL
+                </button>
+                <button class="category-tab" data-category="UI/UX">
+                    <i data-lucide="palette" style="width:14px;height:14px;"></i> UI/UX
+                </button>
+                <button class="category-tab" data-category="Website">
+                    <i data-lucide="globe" style="width:14px;height:14px;"></i> WEBSITE
+                </button>
+                <button class="category-tab" data-category="Data Science">
+                    <i data-lucide="bar-chart-3" style="width:14px;height:14px;"></i> DATA SCIENCE
+                </button>
+                <button class="category-tab" data-category="Jaringan Komputer">
+                    <i data-lucide="network" style="width:14px;height:14px;"></i> JARINGAN
+                </button>
+            </div>
             
             <div id="loading" class="cyber-box text-center">
-                <p class="blinking-text glow-cyan">ACCESSING SERVER DATABASE...</p>
+                <p class="blinking-text glow-cyan">
+                    <i data-lucide="loader" style="width:16px;height:16px;vertical-align:middle;margin-right:6px;" class="spin-icon"></i>
+                    ACCESSING SERVER DATABASE...
+                </p>
                 <div class="modern-progress"><div class="progress-fill"></div></div>
             </div>
             
-            <div id="projects-container" class="projects-grid"></div>
+            <div id="projects-container" class="projects-grid horizontal-scroll"></div>
             
             <div id="api-error" class="cyber-box error-box" style="display:none;">
-                <h3 class="glow-pink">⚠️ CONNECTION ERROR</h3>
+                <h3 class="glow-pink">
+                    <i data-lucide="alert-triangle" style="width:18px;height:18px;vertical-align:middle;margin-right:6px;"></i>
+                    CONNECTION ERROR
+                </h3>
                 <p class="modern-text">Google Apps Script URL belum diatur atau terjadi masalah koneksi.</p>
             </div>
             
             <div id="empty-state" class="cyber-box" style="display:none; text-align: center;">
-                <p class="modern-text">DATABASE KOSONG. BELUM ADA DATA QUEST.</p>
+                <p class="modern-text">
+                    <i data-lucide="inbox" style="width:16px;height:16px;vertical-align:middle;margin-right:6px;"></i>
+                    DATABASE KOSONG. BELUM ADA DATA QUEST.
+                </p>
             </div>
         </section>
 
-        <!-- Interactive Terminal Section -->
-        <section id="terminal" class="reveal" style="margin-top: 60px;">
-            <h2 class="section-title glow-cyan text-center">INTERACTIVE TERMINAL</h2>
-            <div class="terminal-box">
-                <div class="terminal-header">
-                    <span class="terminal-dot red"></span>
-                    <span class="terminal-dot yellow"></span>
-                    <span class="terminal-dot green"></span>
-                    <span class="terminal-title">erman@portfolio:~$</span>
-                </div>
-                <div class="terminal-body" id="terminalBody">
-                    <p class="terminal-line">Welcome to Erman's Portfolio Terminal v2.0</p>
-                    <p class="terminal-line">Type <span class="cmd-highlight">help</span> for available commands.</p>
-                    <p class="terminal-line">---</p>
-                </div>
-                <div class="terminal-input-line">
-                    <span class="terminal-prompt">erman@portfolio:~$</span>
-                    <input type="text" id="terminalInput" class="terminal-input" placeholder="Ketik perintah..." autofocus>
-                </div>
+        <!-- ════════════ CERTIFICATIONS SECTION ════════════ -->
+        <section id="certifications" class="reveal" style="margin-top: 60px;">
+            <h2 class="section-title glow-pink text-center">
+                <i data-lucide="award" style="width:18px;height:18px;vertical-align:middle;margin-right:8px;"></i>
+                COURSES & CERTIFICATIONS
+            </h2>
+            
+            <div id="certs-loading" class="cyber-box text-center">
+                <p class="blinking-text glow-cyan">
+                    <i data-lucide="loader" style="width:16px;height:16px;vertical-align:middle;margin-right:6px;" class="spin-icon"></i>
+                    ACCESSING CERT RECORDS...
+                </p>
+                <div class="modern-progress"><div class="progress-fill"></div></div>
             </div>
-        </section>
-
-        <!-- Testimonials Section -->
-        <section id="testimonials" class="reveal" style="margin-top: 60px;">
-            <h2 class="section-title glow-pink text-center">PLAYER REVIEWS</h2>
-            <div id="testimonials-container" class="testimonials-grid">
-                <!-- Loaded from GAS -->
-            </div>
-            <div id="testimonials-empty" class="cyber-box text-center" style="display:none;">
-                <p class="modern-text">Belum ada review.</p>
+            
+            <div id="certs-container" class="projects-grid horizontal-scroll"></div>
+            
+            <div id="certs-empty" class="cyber-box" style="display:none; text-align: center;">
+                <p class="modern-text">
+                    <i data-lucide="inbox" style="width:16px;height:16px;vertical-align:middle;margin-right:6px;"></i>
+                    BELUM ADA DATA SERTIFIKAT.
+                </p>
             </div>
         </section>
 
         <!-- Contact Form Section -->
         <section id="contact" class="cyber-box reveal" style="margin-top: 60px;">
-            <h2 class="section-title glow-cyan">SEND MESSAGE</h2>
-            <p class="modern-text">Butuh website canggih? Isi form di bawah dan pesan Anda akan langsung masuk ke database saya!</p>
+            <h2 class="section-title glow-cyan">
+                <i data-lucide="mail" style="width:18px;height:18px;vertical-align:middle;margin-right:8px;"></i>
+                SEND MESSAGE
+            </h2>
+            <p class="modern-text">Butuh jasa IT? Isi form di bawah dan pesan Anda akan langsung terkirim ke WhatsApp saya!</p>
             <form id="contactForm" class="contact-form">
                 <div class="form-group">
-                    <label for="contactName">NAMA:</label>
+                    <label for="contactName">
+                        <i data-lucide="user" style="width:12px;height:12px;vertical-align:middle;margin-right:4px;"></i>
+                        NAMA:
+                    </label>
                     <input type="text" id="contactName" required placeholder="Nama Anda">
                 </div>
                 <div class="form-group">
-                    <label for="contactEmail">EMAIL:</label>
+                    <label for="contactEmail">
+                        <i data-lucide="at-sign" style="width:12px;height:12px;vertical-align:middle;margin-right:4px;"></i>
+                        EMAIL:
+                    </label>
                     <input type="email" id="contactEmail" required placeholder="email@example.com">
                 </div>
                 <div class="form-group">
-                    <label for="contactMessage">PESAN:</label>
-                    <textarea id="contactMessage" required placeholder="Ceritakan proyek website impian Anda..." rows="4"></textarea>
+                    <label for="contactMessage">
+                        <i data-lucide="message-square" style="width:12px;height:12px;vertical-align:middle;margin-right:4px;"></i>
+                        PESAN:
+                    </label>
+                    <textarea id="contactMessage" required placeholder="Ceritakan proyek impian Anda..." rows="4"></textarea>
                 </div>
-                <button type="submit" class="btn primary-btn neon-btn" id="contactSubmitBtn" style="width:100%;">TRANSMIT MESSAGE</button>
-                <div id="contactStatus" style="margin-top:15px; text-align:center; font-family: var(--modern-font);"></div>
+                <button type="submit" class="btn primary-btn neon-btn" id="contactSubmitBtn" style="width:100%;">
+                    <i data-lucide="send" style="width:14px;height:14px;vertical-align:middle;margin-right:6px;"></i>
+                    TRANSMIT MESSAGE
+                </button>
             </form>
             <div class="contact-links" style="margin-top: 30px;">
-                <a href="https://wa.me/6281340882207" class="btn primary-btn neon-btn" target="_blank">WHATSAPP</a>
-                <a href="https://github.com/Erman4u" class="btn outline-btn" target="_blank">GITHUB</a>
+                <a href="https://wa.me/6281340882207" class="btn primary-btn neon-btn" target="_blank">
+                    <i data-lucide="message-circle" style="width:14px;height:14px;vertical-align:middle;margin-right:6px;"></i>
+                    WHATSAPP
+                </a>
+                <a href="https://github.com/Erman4u" class="btn outline-btn" target="_blank">
+                    <i data-lucide="github" style="width:14px;height:14px;vertical-align:middle;margin-right:6px;"></i>
+                    GITHUB
+                </a>
             </div>
         </section>
     </main>
@@ -181,16 +267,72 @@
         <div class="footer-content container text-center">
             <div class="social-icons">
                 <a href="https://github.com/Erman4u" target="_blank" class="social-icon" title="GitHub">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
+                    <i data-lucide="github"></i>
                 </a>
                 <a href="https://wa.me/6281340882207" target="_blank" class="social-icon" title="WhatsApp">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.149-.173.198-.297.297-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413z"/></svg>
+                    <i data-lucide="message-circle"></i>
+                </a>
+                <a href="mailto:erman@example.com" class="social-icon" title="Email">
+                    <i data-lucide="mail"></i>
                 </a>
             </div>
             <p class="modern-text" style="margin-top:15px;">© 2026 ERMAN SAPUTRA. ALL SYSTEMS NOMINAL.</p>
-            <p class="visitor-count modern-text" style="font-size:0.8rem; color: var(--neon-cyan);">TOTAL PLAYERS: <span id="visitorCount">...</span></p>
+            <p class="visitor-count modern-text" style="font-size:0.8rem; color: var(--neon-cyan);">
+                <i data-lucide="users" style="width:12px;height:12px;vertical-align:middle;margin-right:4px;"></i>
+                TOTAL VISITORS: <span id="visitorCount">...</span>
+            </p>
         </div>
     </footer>
+
+    <!-- Hidden CV Template for PDF generation -->
+    <div id="cv-template" style="display:none; background:white;">
+        <div style="font-family: 'Outfit', Arial, sans-serif; max-width: 700px; margin: 0 auto; padding: 40px; color: #222;">
+            <div style="text-align: center; margin-bottom: 30px; border-bottom: 3px solid #00b4d8; padding-bottom: 20px;">
+                <h1 style="margin: 0; font-size: 28px; color: #023e8a;">ERMAN SAPUTRA</h1>
+                <p style="margin: 5px 0; font-size: 16px; color: #0077b6;">Digital Architect — Multi-Talent Digital Professional</p>
+                <p style="margin: 5px 0; font-size: 13px; color: #555;">WhatsApp: 081340882207 | GitHub: github.com/Erman4u</p>
+            </div>
+            
+            <div style="margin-bottom: 25px;">
+                <h2 style="font-size: 16px; color: #023e8a; border-bottom: 2px solid #caf0f8; padding-bottom: 5px;">PROFIL</h2>
+                <p style="font-size: 14px; line-height: 1.6;">Digital Architect yang merancang ekosistem digital melalui UI/UX Design, Web Development, Data Science, dan Jaringan Komputer. Berpengalaman membangun solusi digital dari website modern hingga konfigurasi jaringan enterprise.</p>
+            </div>
+            
+            <div style="margin-bottom: 25px;">
+                <h2 style="font-size: 16px; color: #023e8a; border-bottom: 2px solid #caf0f8; padding-bottom: 5px;">PENDIDIKAN</h2>
+                <p style="font-size: 14px; margin: 5px 0;"><strong>S1 Informatika</strong></p>
+                <p style="font-size: 13px; color: #555;">Universitas AMIKOM Yogyakarta</p>
+            </div>
+            
+            <div style="margin-bottom: 25px;">
+                <h2 style="font-size: 16px; color: #023e8a; border-bottom: 2px solid #caf0f8; padding-bottom: 5px;">AREA KEAHLIAN</h2>
+                <ul style="font-size: 14px; line-height: 2;">
+                    <li><strong>UI/UX Design</strong> — Desain antarmuka modern dengan Figma & prototyping</li>
+                    <li><strong>Website Development</strong> — Fullstack web development (React, HTML/CSS/JS, GAS)</li>
+                    <li><strong>Data Science & Analisis</strong> — Pengolahan dan visualisasi data</li>
+                    <li><strong>Jaringan Komputer</strong> — Konfigurasi dan manajemen jaringan</li>
+                </ul>
+            </div>
+            
+            <div style="margin-bottom: 25px;" id="cv-portfolio-section">
+                <h2 style="font-size: 16px; color: #023e8a; border-bottom: 2px solid #caf0f8; padding-bottom: 5px;">PENGALAMAN PROYEK / PORTFOLIO</h2>
+                <ul id="cv-projects-list" style="font-size: 14px; line-height: 1.6;">
+                    <li style="color: #666; font-style: italic; list-style-type: none;">Loading data proyek...</li>
+                </ul>
+            </div>
+
+            <div style="margin-bottom: 25px;" id="cv-cert-section">
+                <h2 style="font-size: 16px; color: #023e8a; border-bottom: 2px solid #caf0f8; padding-bottom: 5px;">KURSUS & SERTIFIKASI</h2>
+                <ul id="cv-certs-list" style="font-size: 14px; line-height: 1.6;">
+                    <li style="color: #666; font-style: italic; list-style-type: none;">Loading data sertifikat...</li>
+                </ul>
+            </div>
+
+            <div style="text-align: center; color: #999; font-size: 11px; border-top: 1px solid #eee; padding-top: 15px;">
+                CV ini di-generate otomatis dari portfolio ermanputra.dev
+            </div>
+        </div>
+    </div>
 
     <script src="script.js"></script>
 </body>

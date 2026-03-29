@@ -1,10 +1,12 @@
 /** ═══════════════════════════════════════════
- *  PIXEL CYBER PORTFOLIO - FULL FEATURE JS
+ *  PIXEL CYBER PORTFOLIO - REVAMPED JS
  *  ═══════════════════════════════════════════ */
 
 /** SET THE GOOGLE APPS SCRIPT WEB APP URL HERE **/
-const API_URL = 'https://script.google.com/macros/s/AKfycbx6e1aF1qXP00lPZ1nuulssS8sY2KUWnpcVu2YqqGEZDBtzwiRniuPZ3QxNVRHZ54Tg8g/exec?api=true';
+const API_URL = 'https://script.google.com/macros/s/AKfycbxRYTRqAXnMRA0LVEPqtfg1j5G6vzY2VXZjhUIy4yeZZ39C9imPXNqLoRx-PqUhvR6l7g/exec?api=true';
 const BASE_URL = API_URL.replace('?api=true', '');
+
+let allProjects = []; // Store all fetched projects for filtering
 
 // ═══════════════════════════════════════════
 // 1. PARTICLE STARFIELD BACKGROUND
@@ -104,7 +106,7 @@ function initScrollReveal() {
 function initTypingEffect() {
     const target = document.getElementById('typing-target');
     if (!target) return;
-    const text = 'Membangun website modern dengan performa tinggi & desain interaktif.';
+    const text = 'Membangun ekosistem digital cerdas melalui UI/UX, Web, Data, dan Jaringan.';
     let i = 0;
     function type() {
         if (i < text.length) {
@@ -128,17 +130,28 @@ function initTypingEffect() {
 // ═══════════════════════════════════════════
 function initThemeToggle() {
     const btn = document.getElementById('themeToggle');
-    if (!btn) return;
+    const icon = document.getElementById('themeIcon');
+    if (!btn || !icon) return;
     const saved = localStorage.getItem('portfolio-theme') || 'dark';
     document.documentElement.setAttribute('data-theme', saved);
-    btn.textContent = saved === 'dark' ? '🌙' : '☀️';
+    
+    // Set initial icon using Lucide if loaded
+    if (window.lucide) {
+        icon.setAttribute('data-lucide', saved === 'dark' ? 'moon' : 'sun');
+        lucide.createIcons();
+    }
 
     btn.addEventListener('click', () => {
         const current = document.documentElement.getAttribute('data-theme');
         const next = current === 'dark' ? 'light' : 'dark';
         document.documentElement.setAttribute('data-theme', next);
         localStorage.setItem('portfolio-theme', next);
-        btn.textContent = next === 'dark' ? '🌙' : '☀️';
+        
+        // Update icon
+        if (window.lucide) {
+            icon.setAttribute('data-lucide', next === 'dark' ? 'moon' : 'sun');
+            lucide.createIcons();
+        }
     });
 }
 
@@ -147,7 +160,7 @@ function initThemeToggle() {
 // ═══════════════════════════════════════════
 function initTiltEffect() {
     document.addEventListener('mousemove', (e) => {
-        document.querySelectorAll('.project-card').forEach(card => {
+        document.querySelectorAll('.project-card:not(.hidden)').forEach(card => {
             const rect = card.getBoundingClientRect();
             const x = e.clientX - rect.left;
             const y = e.clientY - rect.top;
@@ -165,59 +178,7 @@ function initTiltEffect() {
 }
 
 // ═══════════════════════════════════════════
-// 7. INTERACTIVE TERMINAL
-// ═══════════════════════════════════════════
-function initTerminal() {
-    const input = document.getElementById('terminalInput');
-    const body = document.getElementById('terminalBody');
-    if (!input || !body) return;
-
-    const commands = {
-        help: () => `Available commands:\n  <span class="cmd-highlight">about</span>    - Info tentang saya\n  <span class="cmd-highlight">skills</span>   - Daftar skill\n  <span class="cmd-highlight">projects</span> - Lihat proyek\n  <span class="cmd-highlight">contact</span>  - Info kontak\n  <span class="cmd-highlight">education</span>- Riwayat pendidikan\n  <span class="cmd-highlight">clear</span>    - Bersihkan terminal\n  <span class="cmd-highlight">hello</span>    - Sapa saya!`,
-        about: () => `Name: Erman Saputra\nRole: Fullstack Web Developer\nMission: Membangun website modern & interaktif\nLocation: Indonesia`,
-        skills: () => `[■■■■■■■■■■] HTML/CSS    - LV.MAX\n[■■■■■■■■░░] JavaScript  - LV.80\n[■■■■■■■░░░] React.js    - LV.75\n[■■■■■■■■■░] Apps Script - LV.90\n[■■■■■■■■░░] UI/UX       - LV.85`,
-        projects: () => { document.getElementById('projects').scrollIntoView({behavior:'smooth'}); return 'Scrolling to PORTFOLIO ARCHIVE...'; },
-        contact: () => `WhatsApp: 081340882207\nGitHub: github.com/Erman4u\nEmail: (tersedia di form kontak di bawah)`,
-        education: () => `S1 Informatika\nUniversitas AMIKOM Yogyakarta\nStatus: COMPLETE ✅`,
-        hello: () => `Halo! 👋 Terima kasih sudah mengunjungi portofolio saya!\nKetik "help" untuk melihat perintah lainnya.`,
-        clear: () => { body.innerHTML = ''; return null; }
-    };
-
-    input.addEventListener('keydown', (e) => {
-        if (e.key === 'Enter') {
-            const cmd = input.value.trim().toLowerCase();
-            if (!cmd) return;
-
-            // Show user's command
-            const cmdLine = document.createElement('p');
-            cmdLine.className = 'terminal-line';
-            cmdLine.innerHTML = `<span style="color:var(--neon-cyan);">erman@portfolio:~$</span> ${cmd}`;
-            body.appendChild(cmdLine);
-
-            // Process
-            if (commands[cmd]) {
-                const result = commands[cmd]();
-                if (result) {
-                    const output = document.createElement('p');
-                    output.className = 'terminal-line';
-                    output.innerHTML = result.replace(/\n/g, '<br>');
-                    body.appendChild(output);
-                }
-            } else {
-                const err = document.createElement('p');
-                err.className = 'terminal-line';
-                err.innerHTML = `<span style="color:var(--neon-pink);">Command not found: "${cmd}"</span>. Type <span class="cmd-highlight">help</span> for list.`;
-                body.appendChild(err);
-            }
-
-            input.value = '';
-            body.scrollTop = body.scrollHeight;
-        }
-    });
-}
-
-// ═══════════════════════════════════════════
-// 8. FETCH & DISPLAY PROJECTS
+// 7. FETCH & DISPLAY PROJECTS
 // ═══════════════════════════════════════════
 async function fetchProjects() {
     const container = document.getElementById('projects-container');
@@ -234,18 +195,17 @@ async function fetchProjects() {
     try {
         const response = await fetch(API_URL, { method: 'GET', redirect: 'follow' });
         if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
-        const projects = await response.json();
+        allProjects = await response.json();
         loadingState.style.display = 'none';
 
-        if (projects.length === 0) { emptyState.style.display = 'block'; return; }
+        if (allProjects.length === 0) { 
+            emptyState.style.display = 'block'; 
+            return; 
+        }
 
-        projects.forEach(project => {
-            const card = createProjectCard(project);
-            container.appendChild(card);
-        });
-
-        // Init tilt after cards are loaded
-        initTiltEffect();
+        renderProjects(allProjects);
+        initCategoryFilter();
+        populateCVProjects(allProjects);
 
     } catch (error) {
         console.error('Error fetching projects:', error);
@@ -254,68 +214,220 @@ async function fetchProjects() {
     }
 }
 
+function populateCVProjects(projects) {
+    const list = document.getElementById('cv-projects-list');
+    if (!list) return;
+
+    if (!projects || projects.length === 0) {
+        list.innerHTML = '<li style="color: #666; font-style: italic; list-style-type: none;">Belum ada data proyek.</li>';
+        return;
+    }
+
+    list.innerHTML = '';
+    projects.forEach(p => {
+        const li = document.createElement('li');
+        li.style.marginBottom = '12px';
+        li.innerHTML = `<strong>${p.title}</strong> <span style="color:#555; font-size:12px;">(${p.category || 'Lainnya'})</span><br><span style="color:#444;">${p.description}</span>`;
+        list.appendChild(li);
+    });
+}
+
+function renderProjects(projectsToRender) {
+    const container = document.getElementById('projects-container');
+    container.innerHTML = ''; // Clear container
+    
+    if (projectsToRender.length === 0) {
+        container.innerHTML = '<p class="modern-text" style="grid-column: 1/-1; text-align: center;">Tidak ada quest di kategori ini.</p>';
+        return;
+    }
+
+    projectsToRender.forEach(project => {
+        const card = createProjectCard(project);
+        container.appendChild(card);
+    });
+
+    // Re-initialize icons and tilt effect for new elements
+    if (window.lucide) lucide.createIcons();
+    initTiltEffect();
+}
+
 function createProjectCard(project) {
     const div = document.createElement('div');
     div.className = 'project-card cyber-box';
 
-    let rawImg = project.imageUrl;
+    let rawImg = project.imageUrl || 'img/project_fallback.png';
     if (rawImg && rawImg.includes('github.com') && rawImg.includes('/blob/')) {
         rawImg = rawImg.replace('github.com', 'raw.githubusercontent.com').replace('/blob/', '/');
     }
-    const imgUrl = rawImg || 'https://via.placeholder.com/600x400.png?text=No+Image';
+    
+    // Fix Google Drive Embed (Bypass CORB)
+    if (rawImg && rawImg.includes('drive.google.com')) {
+        const matchId = rawImg.match(/[?&]id=([^&]+)/) || rawImg.match(/file\/d\/([^\/]+)/);
+        if (matchId && matchId[1]) {
+            rawImg = `https://drive.google.com/thumbnail?id=${matchId[1]}&sz=w1000`;
+        }
+    }
+    
+    const imgUrl = rawImg;
     const link = project.link || '#';
+    // Fallback category if not provided
+    const cat = project.category || 'Lainnya'; 
 
     div.innerHTML = `
         <div class="project-img-container">
-            <img src="${imgUrl}" alt="${project.title}" class="project-img">
+            <span class="project-category-badge">${cat.toUpperCase()}</span>
+            <img src="${imgUrl}" alt="${project.title}" class="project-img" onerror="this.onerror=null; this.src='img/project_fallback.png';">
         </div>
         <div class="project-info">
             <h3 class="project-title">${project.title}</h3>
             <p class="project-desc">${project.description}</p>
-            <a href="${link}" class="btn outline-btn" target="_blank" rel="noopener noreferrer">ACCESS DATA</a>
+            <a href="${link}" class="btn outline-btn" target="_blank" rel="noopener noreferrer">
+                <i data-lucide="external-link" style="width:14px;height:14px;"></i> ACCESS DATA
+            </a>
         </div>
     `;
     return div;
 }
 
 // ═══════════════════════════════════════════
-// 9. CONTACT FORM → GOOGLE SHEET
+// 7B. FETCH & DISPLAY CERTIFICATIONS
+// ═══════════════════════════════════════════
+let allCerts = [];
+
+async function fetchCertifications() {
+    const container = document.getElementById('certs-container');
+    const loadingState = document.getElementById('certs-loading');
+    const emptyState = document.getElementById('certs-empty');
+    if (!container) return;
+
+    if (API_URL.includes('GANTI_DENGAN_URL')) {
+        loadingState.style.display = 'none'; return;
+    }
+
+    try {
+        const response = await fetch(BASE_URL + '?api=certifications', { method: 'GET', redirect: 'follow' });
+        if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+        allCerts = await response.json();
+        loadingState.style.display = 'none';
+
+        if (allCerts.length === 0) { 
+            emptyState.style.display = 'block'; 
+            return; 
+        }
+
+        renderCertifications(allCerts);
+        populateCVCerts(allCerts);
+
+    } catch (error) {
+        console.error('Error fetching certs:', error);
+        loadingState.style.display = 'none';
+        emptyState.style.display = 'block';
+    }
+}
+
+function renderCertifications(certs) {
+    const container = document.getElementById('certs-container');
+    container.innerHTML = '';
+    
+    certs.forEach(cert => {
+        const div = document.createElement('div');
+        div.className = 'project-card cyber-box';
+        
+        let rawImg = cert.imageUrl || 'img/project_fallback.png';
+        if (rawImg && rawImg.includes('github.com') && rawImg.includes('/blob/')) {
+            rawImg = rawImg.replace('github.com', 'raw.githubusercontent.com').replace('/blob/', '/');
+        }
+        
+        // Fix Google Drive Embed (Bypass CORB)
+        if (rawImg && rawImg.includes('drive.google.com')) {
+            const matchId = rawImg.match(/[?&]id=([^&]+)/) || rawImg.match(/file\/d\/([^\/]+)/);
+            if (matchId && matchId[1]) {
+                rawImg = `https://drive.google.com/thumbnail?id=${matchId[1]}&sz=w1000`;
+            }
+        }
+
+        div.innerHTML = `
+            <div class="project-img-container" style="height:220px; border-bottom: 1px solid var(--border-dim);">
+                <img src="${rawImg}" alt="${cert.title}" class="project-img" style="object-fit:contain; background:rgba(0,0,0,0.5); padding:15px;" onerror="this.onerror=null; this.src='img/project_fallback.png';">
+            </div>
+            <div class="project-info" style="padding: 20px; flex-grow:1; display:flex; align-items:center; justify-content:center;">
+                <h3 class="project-title" style="text-align: center; margin: 0; font-size: 15px; line-height: 1.5; color: var(--neon-cyan); text-transform: capitalize;">${cert.title}</h3>
+            </div>
+        `;
+        container.appendChild(div);
+    });
+}
+
+function populateCVCerts(certs) {
+    const list = document.getElementById('cv-certs-list');
+    if (!list) return;
+
+    if (!certs || certs.length === 0) {
+        list.parentElement.style.display = 'none'; 
+        return;
+    }
+
+    list.parentElement.style.display = 'block';
+    list.innerHTML = '';
+    certs.forEach(c => {
+        const li = document.createElement('li');
+        li.style.marginBottom = '8px';
+        li.innerHTML = `<strong>${c.title}</strong>`;
+        list.appendChild(li);
+    });
+}
+
+// ═══════════════════════════════════════════
+// 8. CATEGORY FILTER LOGIC
+// ═══════════════════════════════════════════
+function initCategoryFilter() {
+    const tabs = document.querySelectorAll('.category-tab');
+    
+    tabs.forEach(tab => {
+        tab.addEventListener('click', () => {
+            // Remove active class from all tabs
+            tabs.forEach(t => t.classList.remove('active'));
+            // Add active class to clicked tab
+            tab.classList.add('active');
+            
+            const category = tab.getAttribute('data-category');
+            
+            if (category === 'all') {
+                renderProjects(allProjects);
+            } else {
+                // Filter projects by exact category string match
+                const filtered = allProjects.filter(p => 
+                    p.category && p.category.toLowerCase() === category.toLowerCase()
+                );
+                renderProjects(filtered);
+            }
+        });
+    });
+}
+
+// ═══════════════════════════════════════════
+// 9. WHATSAPP CONTACT FORM
 // ═══════════════════════════════════════════
 function initContactForm() {
     const form = document.getElementById('contactForm');
     if (!form) return;
 
-    form.addEventListener('submit', async (e) => {
+    form.addEventListener('submit', (e) => {
         e.preventDefault();
-        const btn = document.getElementById('contactSubmitBtn');
-        const status = document.getElementById('contactStatus');
-        btn.disabled = true;
-        btn.textContent = 'TRANSMITTING...';
-        status.textContent = '';
-
-        const data = {
-            action: 'contact',
-            name: document.getElementById('contactName').value,
-            email: document.getElementById('contactEmail').value,
-            message: document.getElementById('contactMessage').value
-        };
-
-        try {
-            const res = await fetch(BASE_URL, {
-                method: 'POST',
-                headers: { 'Content-Type': 'text/plain' },
-                body: JSON.stringify(data)
-            });
-            const result = await res.json();
-            status.textContent = result.message || 'Pesan berhasil dikirim!';
-            status.style.color = 'var(--neon-cyan)';
-            form.reset();
-        } catch (err) {
-            status.textContent = 'Error mengirim pesan. Coba hubungi via WhatsApp.';
-            status.style.color = 'var(--neon-pink)';
-        }
-        btn.disabled = false;
-        btn.textContent = 'TRANSMIT MESSAGE';
+        
+        const name = document.getElementById('contactName').value;
+        const email = document.getElementById('contactEmail').value;
+        const message = document.getElementById('contactMessage').value;
+        
+        // Format WhatsApp Message
+        const waMessage = `Halo Erman, saya ${name} (${email}).%0A%0A${message}`;
+        
+        // Redirect to WhatsApp
+        const waUrl = `https://wa.me/6281340882207?text=${waMessage}`;
+        window.open(waUrl, '_blank');
+        
+        // Reset form
+        form.reset();
     });
 }
 
@@ -333,31 +445,39 @@ async function initVisitorCounter() {
 }
 
 // ═══════════════════════════════════════════
-// 11. TESTIMONIALS
+// 11. DOWNLOAD CV VIA HTML2PDF
 // ═══════════════════════════════════════════
-async function fetchTestimonials() {
-    const container = document.getElementById('testimonials-container');
-    const empty = document.getElementById('testimonials-empty');
-    if (!container) return;
-    try {
-        const res = await fetch(BASE_URL + '?api=testimonials', { redirect: 'follow' });
-        const testimonials = await res.json();
-        if (!testimonials || testimonials.length === 0) { empty.style.display = 'block'; return; }
-        testimonials.forEach(t => {
-            const card = document.createElement('div');
-            card.className = 'testimonial-card';
-            const stars = '★'.repeat(t.rating || 5) + '☆'.repeat(5 - (t.rating || 5));
-            card.innerHTML = `
-                <p class="testimonial-name">${t.name}</p>
-                <p class="testimonial-stars">${stars}</p>
-                <p class="testimonial-text">"${t.text}"</p>
-            `;
-            container.appendChild(card);
+function initDownloadCV() {
+    const btn = document.getElementById('downloadCvBtn');
+    if (!btn) return;
+
+    btn.addEventListener('click', () => {
+        const element = document.getElementById('cv-template');
+        
+        // Show temporarily to generate PDF
+        element.style.display = 'block';
+        
+        const opt = {
+            margin:       0,
+            filename:     'CV_Erman_Saputra_IT.pdf',
+            image:        { type: 'jpeg', quality: 0.98 },
+            html2canvas:  { scale: 2 },
+            jsPDF:        { unit: 'in', format: 'a4', orientation: 'portrait' }
+        };
+
+        // Change button state
+        const originalText = btn.innerHTML;
+        btn.innerHTML = '<i data-lucide="loader" class="spin-icon" style="width:14px;height:14px;margin-right:6px;"></i> GENERATING...';
+        if (window.lucide) lucide.createIcons();
+
+        // Generate PDF
+        html2pdf().set(opt).from(element).save().then(() => {
+            // Restore state
+            element.style.display = 'none';
+            btn.innerHTML = originalText;
+            if (window.lucide) lucide.createIcons();
         });
-    } catch (e) {
-        console.log('Testimonials not available:', e);
-        empty.style.display = 'block';
-    }
+    });
 }
 
 // ═══════════════════════════════════════════
@@ -367,7 +487,10 @@ function initSmoothScroll() {
     document.querySelectorAll('a[href^="#"]').forEach(anchor => {
         anchor.addEventListener('click', function (e) {
             e.preventDefault();
-            const target = document.querySelector(this.getAttribute('href'));
+            const targetId = this.getAttribute('href');
+            if (targetId === '#') return;
+            
+            const target = document.querySelector(targetId);
             if (target) target.scrollIntoView({ behavior: 'smooth' });
         });
     });
@@ -377,17 +500,20 @@ function initSmoothScroll() {
 // INIT ALL ON DOM READY
 // ═══════════════════════════════════════════
 document.addEventListener('DOMContentLoaded', () => {
+    // Initialize Lucide icons
+    if (window.lucide) lucide.createIcons();
+    
     initParticles();
     initScrollProgress();
     initScrollReveal();
     initTypingEffect();
     initThemeToggle();
-    initTerminal();
     initSmoothScroll();
     initContactForm();
+    initDownloadCV();
     
     // Fetch data from backend
     fetchProjects();
-    fetchTestimonials();
+    fetchCertifications();
     initVisitorCounter();
 });
