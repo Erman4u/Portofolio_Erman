@@ -1,12 +1,35 @@
 /** ═══════════════════════════════════════════
  *  PIXEL CYBER PORTFOLIO - REVAMPED JS
+ *  Performance-Optimized Build
  *  ═══════════════════════════════════════════ */
 
 /** SET THE GOOGLE APPS SCRIPT WEB APP URL HERE **/
 const API_URL = 'https://script.google.com/macros/s/AKfycbxRYTRqAXnMRA0LVEPqtfg1j5G6vzY2VXZjhUIy4yeZZ39C9imPXNqLoRx-PqUhvR6l7g/exec?api=true';
 const BASE_URL = API_URL.replace('?api=true', '');
 
+/** Detect mobile / touch device */
+const IS_MOBILE = window.matchMedia('(max-width: 768px)').matches;
+const IS_TOUCH  = navigator.maxTouchPoints > 0 || 'ontouchstart' in window;
+
 let allProjects = []; // Store all fetched projects for filtering
+
+// ═══════════════════════════════════════════
+// ICONS — inline SVG markup for icons injected dynamically via JS
+// (theme toggle, CV button spinner, project card links). Sourced directly
+// from lucide-static@1.24.0, same version the static HTML icons use, so
+// everything stays pixel-identical. No external icon library is loaded.
+// ═══════════════════════════════════════════
+const ICON_WRAP_OPEN = 'xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"';
+const ICONS = {
+    moon: '<path d="M20.985 12.486a9 9 0 1 1-9.473-9.472c.405-.022.617.46.402.803a6 6 0 0 0 8.268 8.268c.344-.215.825-.004.803.401" />',
+    sun: '<circle cx="12" cy="12" r="4" /><path d="M12 2v2" /><path d="M12 20v2" /><path d="m4.93 4.93 1.41 1.41" /><path d="m17.66 17.66 1.41 1.41" /><path d="M2 12h2" /><path d="M20 12h2" /><path d="m6.34 17.66-1.41 1.41" /><path d="m19.07 4.93-1.41 1.41" />',
+    loader: '<path d="M12 2v4" /><path d="m16.2 7.8 2.9-2.9" /><path d="M18 12h4" /><path d="m16.2 16.2 2.9 2.9" /><path d="M12 18v4" /><path d="m4.9 19.1 2.9-2.9" /><path d="M2 12h4" /><path d="m4.9 4.9 2.9 2.9" />',
+    'external-link': '<path d="M15 3h6v6" /><path d="M10 14 21 3" /><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />'
+};
+// Returns a full inline <svg>...</svg> string for a given icon name + extra attrs (e.g. class/style)
+function iconSvg(name, extraAttrs = '') {
+    return `<svg ${ICON_WRAP_OPEN}${extraAttrs}>${ICONS[name]}</svg>`;
+}
 
 // ═══════════════════════════════════════════
 // 1. PARTICLE STARFIELD BACKGROUND
@@ -16,13 +39,17 @@ function initParticles() {
     if (!canvas) return;
     const ctx = canvas.getContext('2d');
     let particles = [];
-    const PARTICLE_COUNT = 80;
+
+    // Drastically reduce on mobile: 25 vs 80
+    const PARTICLE_COUNT = IS_MOBILE ? 25 : 80;
+    // Disable connection lines on mobile (O(n²) loop is very expensive)
+    const DRAW_CONNECTIONS = !IS_MOBILE;
 
     function resize() {
         canvas.width = window.innerWidth;
         canvas.height = window.innerHeight;
     }
-    window.addEventListener('resize', resize);
+    window.addEventListener('resize', resize, { passive: true });
     resize();
 
     for (let i = 0; i < PARTICLE_COUNT; i++) {
@@ -50,19 +77,21 @@ function initParticles() {
             if (p.y < 0 || p.y > canvas.height) p.speedY *= -1;
         });
 
-        // Draw connections
-        for (let i = 0; i < particles.length; i++) {
-            for (let j = i + 1; j < particles.length; j++) {
-                const dx = particles[i].x - particles[j].x;
-                const dy = particles[i].y - particles[j].y;
-                const dist = Math.sqrt(dx * dx + dy * dy);
-                if (dist < 120) {
-                    ctx.beginPath();
-                    ctx.strokeStyle = isDark ? `rgba(0, 240, 255, ${0.15 * (1 - dist / 120)})` : `rgba(0,100,150, ${0.1 * (1 - dist / 120)})`;
-                    ctx.lineWidth = 0.5;
-                    ctx.moveTo(particles[i].x, particles[i].y);
-                    ctx.lineTo(particles[j].x, particles[j].y);
-                    ctx.stroke();
+        // Draw connections only on desktop
+        if (DRAW_CONNECTIONS) {
+            for (let i = 0; i < particles.length; i++) {
+                for (let j = i + 1; j < particles.length; j++) {
+                    const dx = particles[i].x - particles[j].x;
+                    const dy = particles[i].y - particles[j].y;
+                    const dist = Math.sqrt(dx * dx + dy * dy);
+                    if (dist < 120) {
+                        ctx.beginPath();
+                        ctx.strokeStyle = isDark ? `rgba(0, 240, 255, ${0.15 * (1 - dist / 120)})` : `rgba(0,100,150, ${0.1 * (1 - dist / 120)})`;
+                        ctx.lineWidth = 0.5;
+                        ctx.moveTo(particles[i].x, particles[i].y);
+                        ctx.lineTo(particles[j].x, particles[j].y);
+                        ctx.stroke();
+                    }
                 }
             }
         }
@@ -77,12 +106,37 @@ function initParticles() {
 function initScrollProgress() {
     const bar = document.getElementById('scrollProgressBar');
     if (!bar) return;
+
+    // Reading scrollHeight forces the browser to recalculate layout ("forced
+    // reflow"). Doing that on EVERY scroll event was the source of the
+    // forced-reflow warning. Instead, cache it and only recompute when the
+    // document's height can actually change (resize, or new content loaded
+    // via ResizeObserver) — never inside the scroll handler itself.
+    let docHeight = document.documentElement.scrollHeight - window.innerHeight;
+
+    const recalc = () => {
+        docHeight = document.documentElement.scrollHeight - window.innerHeight;
+    };
+    window.addEventListener('resize', recalc, { passive: true });
+
+    if (window.ResizeObserver) {
+        new ResizeObserver(recalc).observe(document.body);
+    } else {
+        // Fallback for older browsers: recalc after async content (projects/certs) loads
+        window.addEventListener('load', recalc, { passive: true });
+    }
+
+    // rAF-throttle the write too, so we only touch style.width once per frame
+    let ticking = false;
     window.addEventListener('scroll', () => {
-        const scrollTop = window.scrollY;
-        const docHeight = document.documentElement.scrollHeight - window.innerHeight;
-        const progress = (scrollTop / docHeight) * 100;
-        bar.style.width = progress + '%';
-    });
+        if (ticking) return;
+        ticking = true;
+        requestAnimationFrame(() => {
+            const progress = docHeight > 0 ? (window.scrollY / docHeight) * 100 : 0;
+            bar.style.width = progress + '%';
+            ticking = false;
+        });
+    }, { passive: true });
 }
 
 // ═══════════════════════════════════════════
@@ -130,28 +184,22 @@ function initTypingEffect() {
 // ═══════════════════════════════════════════
 function initThemeToggle() {
     const btn = document.getElementById('themeToggle');
-    const icon = document.getElementById('themeIcon');
+    const icon = document.getElementById('themeIcon'); // this is now an <svg> element directly
     if (!btn || !icon) return;
     const saved = localStorage.getItem('portfolio-theme') || 'dark';
     document.documentElement.setAttribute('data-theme', saved);
-    
-    // Set initial icon using Lucide if loaded
-    if (window.lucide) {
-        icon.setAttribute('data-lucide', saved === 'dark' ? 'moon' : 'sun');
-        lucide.createIcons();
-    }
+
+    // Set initial icon: just swap the SVG's inner paths, no library needed
+    icon.innerHTML = ICONS[saved === 'dark' ? 'moon' : 'sun'];
 
     btn.addEventListener('click', () => {
         const current = document.documentElement.getAttribute('data-theme');
         const next = current === 'dark' ? 'light' : 'dark';
         document.documentElement.setAttribute('data-theme', next);
         localStorage.setItem('portfolio-theme', next);
-        
+
         // Update icon
-        if (window.lucide) {
-            icon.setAttribute('data-lucide', next === 'dark' ? 'moon' : 'sun');
-            lucide.createIcons();
-        }
+        icon.innerHTML = ICONS[next === 'dark' ? 'moon' : 'sun'];
     });
 }
 
@@ -159,20 +207,28 @@ function initThemeToggle() {
 // 6. 3D TILT EFFECT ON PROJECT CARDS
 // ═══════════════════════════════════════════
 function initTiltEffect() {
+    // Skip entirely on touch devices (no mousemove = useless, wastes memory)
+    if (IS_TOUCH) return;
+
+    let rafId = null; // throttle via requestAnimationFrame
     document.addEventListener('mousemove', (e) => {
-        document.querySelectorAll('.project-card:not(.hidden)').forEach(card => {
-            const rect = card.getBoundingClientRect();
-            const x = e.clientX - rect.left;
-            const y = e.clientY - rect.top;
-            if (x >= 0 && x <= rect.width && y >= 0 && y <= rect.height) {
-                const centerX = rect.width / 2;
-                const centerY = rect.height / 2;
-                const rotateX = ((y - centerY) / centerY) * -8;
-                const rotateY = ((x - centerX) / centerX) * 8;
-                card.style.transform = `perspective(800px) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
-            } else {
-                card.style.transform = '';
-            }
+        if (rafId) return; // skip if already queued
+        rafId = requestAnimationFrame(() => {
+            rafId = null;
+            document.querySelectorAll('.project-card:not(.hidden)').forEach(card => {
+                const rect = card.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                if (x >= 0 && x <= rect.width && y >= 0 && y <= rect.height) {
+                    const centerX = rect.width / 2;
+                    const centerY = rect.height / 2;
+                    const rotateX = ((y - centerY) / centerY) * -8;
+                    const rotateY = ((x - centerX) / centerX) * 8;
+                    card.style.transform = `perspective(800px) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+                } else {
+                    card.style.transform = '';
+                }
+            });
         });
     });
 }
@@ -246,16 +302,21 @@ function renderProjects(projectsToRender) {
         container.appendChild(card);
     });
 
-    // Re-initialize icons and tilt effect for new elements
-    if (window.lucide) lucide.createIcons();
-    initTiltEffect();
+    // Note: we deliberately do NOT call initTiltEffect() here — it already
+    // re-queries .project-card live on every mousemove, so new cards are
+    // picked up automatically. Calling it again on every filter click was
+    // stacking duplicate document-level mousemove listeners (each doing its
+    // own getBoundingClientRect reads), which compounded into worse and
+    // worse jank the more you filtered. Cards below use inline SVG already,
+    // so no icon re-render step is needed either.
 }
 
 function createProjectCard(project) {
     const div = document.createElement('div');
     div.className = 'project-card cyber-box';
+    div.setAttribute('role', 'listitem');
 
-    let rawImg = project.imageUrl || 'img/project_fallback.png';
+    let rawImg = project.imageUrl || '';
     if (rawImg && rawImg.includes('github.com') && rawImg.includes('/blob/')) {
         rawImg = rawImg.replace('github.com', 'raw.githubusercontent.com').replace('/blob/', '/');
     }
@@ -264,25 +325,24 @@ function createProjectCard(project) {
     if (rawImg && rawImg.includes('drive.google.com')) {
         const matchId = rawImg.match(/[?&]id=([^&]+)/) || rawImg.match(/file\/d\/([^\/]+)/);
         if (matchId && matchId[1]) {
-            rawImg = `https://drive.google.com/thumbnail?id=${matchId[1]}&sz=w1000`;
+            rawImg = `https://drive.google.com/thumbnail?id=${matchId[1]}&sz=w600`;
         }
     }
     
-    const imgUrl = rawImg;
+    const imgUrl = rawImg || 'img/project_fallback.png';
     const link = project.link || '#';
-    // Fallback category if not provided
     const cat = project.category || 'Lainnya'; 
 
     div.innerHTML = `
         <div class="project-img-container">
             <span class="project-category-badge">${cat.toUpperCase()}</span>
-            <img src="${imgUrl}" alt="${project.title}" class="project-img" onerror="this.onerror=null; this.src='img/project_fallback.png';">
+            <img src="${imgUrl}" alt="${project.title}" class="project-img" loading="lazy" decoding="async" width="350" height="200" onerror="this.onerror=null; this.src='img/project_fallback.png';">
         </div>
         <div class="project-info">
             <h3 class="project-title">${project.title}</h3>
             <p class="project-desc">${project.description}</p>
             <a href="${link}" class="btn outline-btn" target="_blank" rel="noopener noreferrer">
-                <i data-lucide="external-link" style="width:14px;height:14px;"></i> ACCESS DATA
+                ${iconSvg('external-link', ' style="width:14px;height:14px;"')} ACCESS DATA
             </a>
         </div>
     `;
@@ -446,37 +506,43 @@ async function initVisitorCounter() {
 
 // ═══════════════════════════════════════════
 // 11. DOWNLOAD CV VIA HTML2PDF
+//     Lazy-load the library only when the button is clicked
 // ═══════════════════════════════════════════
 function initDownloadCV() {
     const btn = document.getElementById('downloadCvBtn');
     if (!btn) return;
 
     btn.addEventListener('click', () => {
-        const element = document.getElementById('cv-template');
-        
-        // Show temporarily to generate PDF
-        element.style.display = 'block';
-        
-        const opt = {
-            margin:       0,
-            filename:     'CV_Erman_Saputra_IT.pdf',
-            image:        { type: 'jpeg', quality: 0.98 },
-            html2canvas:  { scale: 2 },
-            jsPDF:        { unit: 'in', format: 'a4', orientation: 'portrait' }
-        };
+        // Lazy-load html2pdf: only injected when first needed
+        if (!window.html2pdf) {
+            const script = document.createElement('script');
+            script.src = 'https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js';
+            script.onload = () => generatePDF(btn);
+            document.head.appendChild(script);
+        } else {
+            generatePDF(btn);
+        }
+    });
+}
 
-        // Change button state
-        const originalText = btn.innerHTML;
-        btn.innerHTML = '<i data-lucide="loader" class="spin-icon" style="width:14px;height:14px;margin-right:6px;"></i> GENERATING...';
-        if (window.lucide) lucide.createIcons();
+function generatePDF(btn) {
+    const element = document.getElementById('cv-template');
+    element.style.display = 'block';
+    
+    const opt = {
+        margin:       0,
+        filename:     'CV_Erman_Saputra_IT.pdf',
+        image:        { type: 'jpeg', quality: 0.95 },
+        html2canvas:  { scale: 2, useCORS: true },
+        jsPDF:        { unit: 'in', format: 'a4', orientation: 'portrait' }
+    };
 
-        // Generate PDF
-        html2pdf().set(opt).from(element).save().then(() => {
-            // Restore state
-            element.style.display = 'none';
-            btn.innerHTML = originalText;
-            if (window.lucide) lucide.createIcons();
-        });
+    const originalHTML = btn.innerHTML;
+    btn.innerHTML = `${iconSvg('loader', ' class="spin-icon" style="width:14px;height:14px;margin-right:6px;"')} GENERATING...`;
+
+    html2pdf().set(opt).from(element).save().then(() => {
+        element.style.display = 'none';
+        btn.innerHTML = originalHTML;
     });
 }
 
@@ -500,18 +566,22 @@ function initSmoothScroll() {
 // INIT ALL ON DOM READY
 // ═══════════════════════════════════════════
 document.addEventListener('DOMContentLoaded', () => {
-    // Initialize Lucide icons
-    if (window.lucide) lucide.createIcons();
-    
-    initParticles();
+    // Critical inits (immediate)
     initScrollProgress();
     initScrollReveal();
-    initTypingEffect();
     initThemeToggle();
     initSmoothScroll();
     initContactForm();
     initDownloadCV();
-    
+
+    // Non-critical: defer with requestIdleCallback / setTimeout
+    const defer = window.requestIdleCallback || ((cb) => setTimeout(cb, 200));
+    defer(() => {
+        initParticles();
+        initTypingEffect();
+        initTiltEffect(); // no-op on touch devices
+    });
+
     // Fetch data from backend
     fetchProjects();
     fetchCertifications();

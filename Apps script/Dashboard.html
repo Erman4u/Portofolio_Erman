@@ -1,0 +1,1458 @@
+﻿<!DOCTYPE html>
+<html lang="id">
+
+<head>
+  <base target="_top">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin CMS — Erman Portfolio</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    /* ══════════════════════════════════════════
+       CSS VARIABLES — DARK SaaS CMS THEME
+       ══════════════════════════════════════════ */
+    :root {
+      --bg-base:      #0f1117;
+      --bg-surface:   #1a1d27;
+      --bg-elevated:  #212432;
+      --bg-hover:     #272b3d;
+      --border:       #2e3148;
+      --border-light: #3a3f5c;
+
+      --text-primary:   #f0f2f8;
+      --text-secondary: #8b90b0;
+      --text-muted:     #565b78;
+
+      --accent:         #4f6ef7;
+      --accent-hover:   #3d5ce8;
+      --accent-glow:    rgba(79, 110, 247, 0.2);
+      --accent-subtle:  rgba(79, 110, 247, 0.08);
+
+      --success:        #22c55e;
+      --success-bg:     rgba(34, 197, 94, 0.1);
+      --warning:        #f59e0b;
+      --warning-bg:     rgba(245, 158, 11, 0.1);
+      --danger:         #ef4444;
+      --danger-bg:      rgba(239, 68, 68, 0.1);
+      --danger-hover:   #dc2626;
+
+      --sidebar-w:    240px;
+      --header-h:     60px;
+      --radius:       10px;
+      --radius-sm:    6px;
+      --shadow:       0 4px 24px rgba(0,0,0,0.4);
+      --shadow-sm:    0 2px 8px rgba(0,0,0,0.25);
+      --transition:   all 0.2s ease;
+
+      --font: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    }
+
+    /* ══════════════════════════════════════════
+       RESET & BASE
+       ══════════════════════════════════════════ */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { font-size: 14px; }
+    body {
+      font-family: var(--font);
+      background: var(--bg-base);
+      color: var(--text-primary);
+      line-height: 1.6;
+      min-height: 100vh;
+      display: flex;
+      overflow-x: hidden;
+    }
+    ::selection { background: var(--accent); color: #fff; }
+    a { color: var(--accent); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+    img { max-width: 100%; border-radius: var(--radius-sm); }
+
+    /* ══════════════════════════════════════════
+       SIDEBAR
+       ══════════════════════════════════════════ */
+    .sidebar {
+      width: var(--sidebar-w);
+      min-height: 100vh;
+      background: var(--bg-surface);
+      border-right: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      position: fixed;
+      top: 0; left: 0; bottom: 0;
+      z-index: 100;
+      transition: transform 0.3s ease;
+    }
+    .sidebar-logo {
+      padding: 20px 20px 16px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .logo-icon-wrap {
+      width: 36px; height: 36px;
+      background: var(--accent);
+      border-radius: var(--radius-sm);
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+    .logo-icon-wrap svg { width: 18px; height: 18px; color: #fff; }
+    .logo-text { font-size: 14px; font-weight: 700; color: var(--text-primary); line-height: 1.2; }
+    .logo-sub { font-size: 10px; color: var(--text-muted); font-weight: 400; }
+
+    .sidebar-nav { padding: 12px 10px; flex: 1; }
+    .nav-section-label {
+      font-size: 10px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--text-muted);
+      padding: 8px 10px 4px;
+    }
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 9px 12px;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      transition: var(--transition);
+      color: var(--text-secondary);
+      font-size: 13px;
+      font-weight: 500;
+      border: none;
+      background: transparent;
+      width: 100%;
+      text-align: left;
+      margin-bottom: 2px;
+    }
+    .nav-item svg { width: 16px; height: 16px; flex-shrink: 0; }
+    .nav-item:hover { background: var(--bg-hover); color: var(--text-primary); }
+    .nav-item.active {
+      background: var(--accent-subtle);
+      color: var(--accent);
+      box-shadow: inset 3px 0 0 var(--accent);
+    }
+    .nav-item.active svg { color: var(--accent); }
+    .nav-badge {
+      margin-left: auto;
+      background: var(--accent-subtle);
+      color: var(--accent);
+      font-size: 10px;
+      font-weight: 600;
+      padding: 2px 7px;
+      border-radius: 20px;
+    }
+
+    .sidebar-footer {
+      padding: 14px 16px;
+      border-top: 1px solid var(--border);
+    }
+    .user-info {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .user-avatar {
+      width: 32px; height: 32px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--accent), #7c3aed);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 12px; font-weight: 700; color: #fff; flex-shrink: 0;
+    }
+    .user-name { font-size: 12px; font-weight: 600; color: var(--text-primary); }
+    .user-role { font-size: 10px; color: var(--text-muted); }
+
+    /* ══════════════════════════════════════════
+       MAIN LAYOUT
+       ══════════════════════════════════════════ */
+    .main-wrap {
+      margin-left: var(--sidebar-w);
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+
+    /* ══════════════════════════════════════════
+       TOP HEADER
+       ══════════════════════════════════════════ */
+    .top-header {
+      height: var(--header-h);
+      background: var(--bg-surface);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 28px;
+      position: sticky;
+      top: 0;
+      z-index: 90;
+    }
+    .page-breadcrumb {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 13px;
+    }
+    .breadcrumb-root { color: var(--text-muted); }
+    .breadcrumb-sep { color: var(--text-muted); }
+    .breadcrumb-current { font-weight: 600; color: var(--text-primary); }
+    .header-actions { display: flex; align-items: center; gap: 10px; }
+    .status-indicator {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 12px;
+      color: var(--text-secondary);
+      background: var(--bg-elevated);
+      padding: 5px 12px;
+      border-radius: 20px;
+      border: 1px solid var(--border);
+    }
+    .status-dot {
+      width: 7px; height: 7px;
+      border-radius: 50%;
+      background: var(--success);
+      animation: pulse-dot 2s infinite;
+    }
+    @keyframes pulse-dot {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.6; transform: scale(0.8); }
+    }
+
+    /* ══════════════════════════════════════════
+       CONTENT AREA
+       ══════════════════════════════════════════ */
+    .content-area {
+      padding: 28px;
+      flex: 1;
+    }
+    .page-header {
+      margin-bottom: 24px;
+    }
+    .page-title {
+      font-size: 22px;
+      font-weight: 700;
+      color: var(--text-primary);
+      letter-spacing: -0.3px;
+    }
+    .page-subtitle {
+      font-size: 13px;
+      color: var(--text-secondary);
+      margin-top: 4px;
+    }
+
+    /* ══════════════════════════════════════════
+       TAB CONTENT
+       ══════════════════════════════════════════ */
+    .tab-content { display: none; }
+    .tab-content.active { display: block; }
+
+    /* ══════════════════════════════════════════
+       METRIC CARDS
+       ══════════════════════════════════════════ */
+    .metrics-row {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 16px;
+      margin-bottom: 28px;
+    }
+    .metric-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 20px;
+      transition: var(--transition);
+    }
+    .metric-card:hover {
+      border-color: var(--border-light);
+      box-shadow: var(--shadow-sm);
+    }
+    .metric-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 14px;
+    }
+    .metric-label {
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+    .metric-icon {
+      width: 32px; height: 32px;
+      border-radius: var(--radius-sm);
+      display: flex; align-items: center; justify-content: center;
+    }
+    .metric-icon svg { width: 16px; height: 16px; }
+    .metric-icon.blue { background: var(--accent-subtle); color: var(--accent); }
+    .metric-icon.green { background: var(--success-bg); color: var(--success); }
+    .metric-icon.yellow { background: var(--warning-bg); color: var(--warning); }
+    .metric-value {
+      font-size: 30px;
+      font-weight: 700;
+      color: var(--text-primary);
+      line-height: 1;
+      letter-spacing: -1px;
+    }
+    .metric-footer {
+      font-size: 11px;
+      color: var(--text-muted);
+      margin-top: 8px;
+    }
+
+    /* ══════════════════════════════════════════
+       CARDS / PANELS
+       ══════════════════════════════════════════ */
+    .card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+      margin-bottom: 20px;
+    }
+    .card-header {
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .card-title {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text-primary);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .card-title svg { width: 15px; height: 15px; color: var(--accent); }
+    .card-body { padding: 20px; }
+
+    /* ══════════════════════════════════════════
+       FORM ELEMENTS
+       ══════════════════════════════════════════ */
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+    .form-group { display: flex; flex-direction: column; gap: 6px; }
+    .form-group.full { grid-column: 1 / -1; }
+    .form-label {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    .form-input,
+    .form-textarea,
+    .form-select {
+      background: var(--bg-base);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      color: var(--text-primary);
+      padding: 9px 12px;
+      font-family: var(--font);
+      font-size: 13px;
+      transition: var(--transition);
+      outline: none;
+      width: 100%;
+    }
+    .form-input:focus,
+    .form-textarea:focus,
+    .form-select:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px var(--accent-glow);
+    }
+    .form-input::placeholder,
+    .form-textarea::placeholder { color: var(--text-muted); }
+    .form-textarea { resize: vertical; min-height: 90px; }
+    .form-select { cursor: pointer; appearance: none; }
+    .form-select option { background: var(--bg-elevated); }
+
+    /* Upload area */
+    .upload-section {
+      background: var(--bg-base);
+      border: 1px dashed var(--border-light);
+      border-radius: var(--radius-sm);
+      padding: 16px;
+    }
+    .upload-divider {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin: 10px 0;
+      color: var(--text-muted);
+      font-size: 11px;
+    }
+    .upload-divider::before,
+    .upload-divider::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--border);
+    }
+    .form-hint {
+      font-size: 11px;
+      color: var(--text-muted);
+      margin-top: 4px;
+    }
+
+    /* File input */
+    .form-input[type="file"] {
+      padding: 7px 12px;
+      cursor: pointer;
+    }
+    .form-input[type="file"]::-webkit-file-upload-button {
+      background: var(--bg-elevated);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      color: var(--text-secondary);
+      padding: 4px 10px;
+      font-family: var(--font);
+      font-size: 11px;
+      cursor: pointer;
+      margin-right: 8px;
+      transition: var(--transition);
+    }
+    .form-input[type="file"]::-webkit-file-upload-button:hover {
+      background: var(--bg-hover);
+    }
+
+    /* ══════════════════════════════════════════
+       BUTTONS
+       ══════════════════════════════════════════ */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 7px;
+      padding: 9px 18px;
+      border-radius: var(--radius-sm);
+      font-family: var(--font);
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      border: none;
+      transition: var(--transition);
+      white-space: nowrap;
+    }
+    .btn svg { width: 14px; height: 14px; }
+    .btn-primary {
+      background: var(--accent);
+      color: #fff;
+    }
+    .btn-primary:hover { background: var(--accent-hover); box-shadow: 0 4px 12px var(--accent-glow); }
+    .btn-primary:disabled { background: var(--bg-elevated); color: var(--text-muted); cursor: not-allowed; box-shadow: none; }
+    .btn-danger {
+      background: var(--danger-bg);
+      color: var(--danger);
+      border: 1px solid rgba(239,68,68,0.2);
+    }
+    .btn-danger:hover { background: var(--danger); color: #fff; }
+    .btn-secondary {
+      background: var(--bg-elevated);
+      color: var(--text-secondary);
+      border: 1px solid var(--border);
+    }
+    .btn-secondary:hover { background: var(--bg-hover); color: var(--text-primary); }
+    .btn-full { width: 100%; margin-top: 8px; padding: 11px 18px; }
+
+    /* ══════════════════════════════════════════
+       DATA LIST (PROJECT / CERT ITEMS)
+       ══════════════════════════════════════════ */
+    .list-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 12px;
+    }
+    .list-title {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+    .list-count {
+      font-size: 11px;
+      color: var(--text-muted);
+      background: var(--bg-elevated);
+      padding: 2px 8px;
+      border-radius: 20px;
+    }
+
+    .data-list { display: flex; flex-direction: column; gap: 10px; }
+    .data-item {
+      background: var(--bg-elevated);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 14px 16px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      transition: var(--transition);
+    }
+    .data-item:hover {
+      border-color: var(--border-light);
+      background: var(--bg-hover);
+    }
+    .data-thumb {
+      width: 52px;
+      height: 52px;
+      border-radius: var(--radius-sm);
+      object-fit: cover;
+      background: var(--bg-base);
+      flex-shrink: 0;
+      border: 1px solid var(--border);
+    }
+    .data-thumb-placeholder {
+      width: 52px; height: 52px;
+      border-radius: var(--radius-sm);
+      background: var(--bg-base);
+      border: 1px dashed var(--border-light);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      color: var(--text-muted);
+    }
+    .data-thumb-placeholder svg { width: 18px; height: 18px; }
+    .data-info { flex: 1; min-width: 0; }
+    .data-name {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-primary);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      margin-bottom: 3px;
+    }
+    .data-meta {
+      font-size: 11px;
+      color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .data-badge {
+      background: var(--accent-subtle);
+      color: var(--accent);
+      font-size: 10px;
+      font-weight: 600;
+      padding: 2px 8px;
+      border-radius: 20px;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+    .data-actions { display: flex; gap: 8px; flex-shrink: 0; }
+
+    .empty-state {
+      text-align: center;
+      padding: 48px 24px;
+      color: var(--text-muted);
+    }
+    .empty-state svg {
+      width: 40px; height: 40px;
+      margin-bottom: 12px;
+      opacity: 0.4;
+    }
+    .empty-state p { font-size: 13px; }
+
+    /* ══════════════════════════════════════════
+       MODAL
+       ══════════════════════════════════════════ */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.7);
+      backdrop-filter: blur(4px);
+      z-index: 200;
+      align-items: flex-start;
+      justify-content: center;
+      padding: 40px 20px;
+      overflow-y: auto;
+    }
+    .modal-overlay.active { display: flex; }
+    .modal-box {
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      width: 100%;
+      max-width: 640px;
+      position: relative;
+      box-shadow: var(--shadow);
+      margin: auto;
+    }
+    .modal-header {
+      padding: 18px 20px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .modal-title {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+    .modal-close {
+      background: var(--bg-elevated);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      color: var(--text-secondary);
+      width: 30px; height: 30px;
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+    .modal-close:hover { background: var(--danger-bg); color: var(--danger); border-color: rgba(239,68,68,0.3); }
+    .modal-close svg { width: 14px; height: 14px; }
+    .modal-body { padding: 20px; }
+
+    /* ══════════════════════════════════════════
+       TOAST NOTIFICATIONS
+       ══════════════════════════════════════════ */
+    .toast-container {
+      position: fixed;
+      top: 16px;
+      right: 16px;
+      z-index: 9999;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      pointer-events: none;
+    }
+    .toast {
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 12px 16px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 13px;
+      color: var(--text-primary);
+      box-shadow: var(--shadow);
+      pointer-events: all;
+      min-width: 280px;
+      max-width: 380px;
+      animation: slide-in 0.3s ease;
+    }
+    .toast.success { border-left: 3px solid var(--success); }
+    .toast.error   { border-left: 3px solid var(--danger); }
+    .toast.info    { border-left: 3px solid var(--accent); }
+    .toast-icon { flex-shrink: 0; }
+    .toast-icon svg { width: 16px; height: 16px; }
+    .toast.success .toast-icon { color: var(--success); }
+    .toast.error   .toast-icon { color: var(--danger); }
+    .toast.info    .toast-icon { color: var(--accent); }
+    .toast-msg { flex: 1; line-height: 1.4; }
+    @keyframes slide-in {
+      from { opacity: 0; transform: translateX(20px); }
+      to   { opacity: 1; transform: translateX(0); }
+    }
+
+    /* ══════════════════════════════════════════
+       LOADING STATE
+       ══════════════════════════════════════════ */
+    .skeleton {
+      background: linear-gradient(90deg, var(--bg-elevated) 25%, var(--bg-hover) 50%, var(--bg-elevated) 75%);
+      background-size: 200% 100%;
+      animation: shimmer 1.5s infinite;
+      border-radius: var(--radius-sm);
+    }
+    @keyframes shimmer {
+      0% { background-position: 200% 0; }
+      100% { background-position: -200% 0; }
+    }
+
+    /* ══════════════════════════════════════════
+       RESPONSIVE
+       ══════════════════════════════════════════ */
+    .hamburger {
+      display: none;
+      background: var(--bg-elevated);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 6px 8px;
+      cursor: pointer;
+      color: var(--text-primary);
+    }
+    .hamburger svg { width: 18px; height: 18px; }
+
+    @media (max-width: 768px) {
+      .sidebar {
+        transform: translateX(-100%);
+      }
+      .sidebar.open {
+        transform: translateX(0);
+        box-shadow: 4px 0 20px rgba(0,0,0,0.5);
+      }
+      .main-wrap { margin-left: 0; }
+      .hamburger { display: flex; }
+      .content-area { padding: 16px; }
+      .form-grid { grid-template-columns: 1fr; }
+      .metrics-row { grid-template-columns: 1fr 1fr; }
+      .data-actions { flex-direction: column; }
+    }
+    @media (max-width: 480px) {
+      .metrics-row { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+
+<body>
+  <!-- ══════════════════ SIDEBAR ══════════════════ -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-logo">
+      <div class="logo-icon-wrap">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M9 3H5a2 2 0 00-2 2v4m6-6h10a2 2 0 012 2v4M9 3v18m0 0h10a2 2 0 002-2V9M9 21H5a2 2 0 01-2-2V9m0 0h18"/>
+        </svg>
+      </div>
+      <div>
+        <div class="logo-text">Portfolio CMS</div>
+        <div class="logo-sub">Admin Panel</div>
+      </div>
+    </div>
+
+    <nav class="sidebar-nav">
+      <div class="nav-section-label">Dashboard</div>
+      <button class="nav-item active" id="nav-overview" onclick="switchTab('overview', event)">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/>
+        </svg>
+        Overview
+      </button>
+
+      <div class="nav-section-label" style="margin-top:10px;">Content</div>
+      <button class="nav-item" id="nav-projects" onclick="switchTab('projects', event)">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M3 7a2 2 0 012-2h4l2 2h8a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V7z"/>
+        </svg>
+        Proyek
+        <span class="nav-badge" id="sidebarBadgeProjects">-</span>
+      </button>
+      <button class="nav-item" id="nav-certifications" onclick="switchTab('certifications', event)">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="8" r="6"/><path stroke-linecap="round" stroke-linejoin="round" d="M15.477 12.89L17 22l-5-3-5 3 1.523-9.11"/>
+        </svg>
+        Sertifikat
+        <span class="nav-badge" id="sidebarBadgeCerts">-</span>
+      </button>
+    </nav>
+
+    <div class="sidebar-footer">
+      <div class="user-info">
+        <div class="user-avatar">ES</div>
+        <div>
+          <div class="user-name">Erman Saputra</div>
+          <div class="user-role">Administrator</div>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- ══════════════════ MAIN ══════════════════ -->
+  <div class="main-wrap">
+
+    <!-- TOP HEADER -->
+    <header class="top-header">
+      <div class="page-breadcrumb">
+        <button class="hamburger" id="hamburgerBtn" onclick="toggleSidebar()">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16"/>
+          </svg>
+        </button>
+        <span class="breadcrumb-root">Portfolio CMS</span>
+        <span class="breadcrumb-sep">›</span>
+        <span class="breadcrumb-current" id="breadcrumbCurrent">Overview</span>
+      </div>
+      <div class="header-actions">
+        <div class="status-indicator">
+          <div class="status-dot"></div>
+          Connected
+        </div>
+      </div>
+    </header>
+
+    <!-- CONTENT AREA -->
+    <main class="content-area">
+
+      <!-- ────── TAB: OVERVIEW ────── -->
+      <div class="tab-content active" id="tab-overview">
+        <div class="page-header">
+          <div class="page-title">Dashboard Overview</div>
+          <div class="page-subtitle">Ringkasan data portofolio Anda</div>
+        </div>
+
+        <div class="metrics-row">
+          <div class="metric-card">
+            <div class="metric-header">
+              <span class="metric-label">Total Proyek</span>
+              <div class="metric-icon blue">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M3 7a2 2 0 012-2h4l2 2h8a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V7z"/>
+                </svg>
+              </div>
+            </div>
+            <div class="metric-value" id="statProjects">—</div>
+            <div class="metric-footer">Proyek dalam portofolio</div>
+          </div>
+
+          <div class="metric-card">
+            <div class="metric-header">
+              <span class="metric-label">Sertifikat</span>
+              <div class="metric-icon green">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                  <circle cx="12" cy="8" r="6"/><path stroke-linecap="round" stroke-linejoin="round" d="M15.477 12.89L17 22l-5-3-5 3 1.523-9.11"/>
+                </svg>
+              </div>
+            </div>
+            <div class="metric-value" id="statCerts">—</div>
+            <div class="metric-footer">Sertifikat & kursus</div>
+          </div>
+
+          <div class="metric-card">
+            <div class="metric-header">
+              <span class="metric-label">Total Visitors</span>
+              <div class="metric-icon yellow">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/>
+                </svg>
+              </div>
+            </div>
+            <div class="metric-value" id="statVisitors">—</div>
+            <div class="metric-footer">Pengunjung website</div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+              </svg>
+              Quick Actions
+            </div>
+          </div>
+          <div class="card-body" style="display:flex;gap:10px;flex-wrap:wrap;">
+            <button class="btn btn-primary" onclick="switchTab('projects', null)">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
+              Tambah Proyek
+            </button>
+            <button class="btn btn-secondary" onclick="switchTab('certifications', null)">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
+              Tambah Sertifikat
+            </button>
+            <button class="btn btn-secondary" onclick="loadAll()">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+              Refresh Data
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ────── TAB: PROJECTS ────── -->
+      <div class="tab-content" id="tab-projects">
+        <div class="page-header">
+          <div class="page-title">Manajemen Proyek</div>
+          <div class="page-subtitle">Tambah dan kelola proyek portofolio</div>
+        </div>
+
+        <!-- Add Form -->
+        <div class="card" style="margin-bottom:24px;">
+          <div class="card-header">
+            <div class="card-title">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
+              Tambah Proyek Baru
+            </div>
+          </div>
+          <div class="card-body">
+            <form id="projectForm">
+              <div class="form-grid">
+                <div class="form-group">
+                  <label class="form-label" for="title">Nama Proyek *</label>
+                  <input type="text" id="title" class="form-input" required placeholder="cth: Aplikasi Kasir">
+                </div>
+                <div class="form-group">
+                  <label class="form-label" for="category">Kategori *</label>
+                  <select id="category" class="form-select" required>
+                    <option value="UI/UX">UI/UX Design</option>
+                    <option value="Website">Website</option>
+                    <option value="Data Science">Data Science</option>
+                    <option value="Jaringan Komputer">Jaringan Komputer</option>
+                  </select>
+                </div>
+                <div class="form-group full">
+                  <label class="form-label" for="description">Deskripsi *</label>
+                  <textarea id="description" class="form-textarea" required placeholder="Jelaskan proyek ini secara singkat..."></textarea>
+                </div>
+                <div class="form-group full">
+                  <label class="form-label" for="link">URL Proyek</label>
+                  <input type="url" id="link" class="form-input" placeholder="https://domain.com">
+                </div>
+                <div class="form-group full">
+                  <label class="form-label">Gambar Proyek</label>
+                  <div class="upload-section">
+                    <div class="form-group" style="margin-bottom:8px;">
+                      <label class="form-label" for="imageFile">Upload File</label>
+                      <input type="file" id="imageFile" class="form-input" accept="image/*">
+                      <p class="form-hint">File akan diupload ke Google Drive otomatis.</p>
+                    </div>
+                    <div class="upload-divider">— atau gunakan URL —</div>
+                    <div class="form-group">
+                      <label class="form-label" for="imageUrl">Paste Link Gambar</label>
+                      <input type="url" id="imageUrl" class="form-input" placeholder="https://link-gambar.com/image.png">
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <button type="submit" class="btn btn-primary btn-full" id="submitBtn">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/></svg>
+                Upload Proyek
+              </button>
+            </form>
+          </div>
+        </div>
+
+        <!-- Projects List -->
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 10h16M4 14h16M4 18h16"/>
+              </svg>
+              Daftar Proyek
+            </div>
+            <span class="list-count" id="projectCountBadge">Memuat...</span>
+          </div>
+          <div class="card-body">
+            <div id="projectsContainer">
+              <div class="data-item skeleton" style="height:80px;border:none;background:var(--bg-elevated);"></div>
+              <div class="data-item skeleton" style="height:80px;border:none;background:var(--bg-elevated);margin-top:10px;"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ────── TAB: CERTIFICATIONS ────── -->
+      <div class="tab-content" id="tab-certifications">
+        <div class="page-header">
+          <div class="page-title">Manajemen Sertifikat</div>
+          <div class="page-subtitle">Tambah dan kelola sertifikat & kursus</div>
+        </div>
+
+        <!-- Add Form -->
+        <div class="card" style="margin-bottom:24px;">
+          <div class="card-header">
+            <div class="card-title">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
+              Tambah Sertifikat Baru
+            </div>
+          </div>
+          <div class="card-body">
+            <form id="certForm">
+              <div class="form-group" style="margin-bottom:16px;">
+                <label class="form-label" for="certTitle">Nama Kursus / Sertifikat *</label>
+                <input type="text" id="certTitle" class="form-input" required placeholder="cth: Google Data Analytics Certificate">
+              </div>
+              <div class="form-group" style="margin-bottom:16px;">
+                <label class="form-label">Gambar Sertifikat</label>
+                <div class="upload-section">
+                  <div class="form-group" style="margin-bottom:8px;">
+                    <label class="form-label" for="certImageFile">Upload File</label>
+                    <input type="file" id="certImageFile" class="form-input" accept="image/*">
+                  </div>
+                  <div class="upload-divider">— atau gunakan URL —</div>
+                  <div class="form-group">
+                    <label class="form-label" for="certImageUrl">Paste Link Gambar</label>
+                    <input type="url" id="certImageUrl" class="form-input" placeholder="https://link-gambar.com/cert.png">
+                  </div>
+                </div>
+              </div>
+              <button type="submit" class="btn btn-primary btn-full" id="certSubmitBtn">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/></svg>
+                Upload Sertifikat
+              </button>
+            </form>
+          </div>
+        </div>
+
+        <!-- Certs List -->
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 10h16M4 14h16M4 18h16"/>
+              </svg>
+              Daftar Sertifikat
+            </div>
+            <span class="list-count" id="certCountBadge">Memuat...</span>
+          </div>
+          <div class="card-body">
+            <div id="certsContainer">
+              <div class="data-item skeleton" style="height:80px;border:none;background:var(--bg-elevated);"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </main>
+  </div>
+
+  <!-- ══════════════════ EDIT PROJECT MODAL ══════════════════ -->
+  <div id="editModal" class="modal-overlay">
+    <div class="modal-box">
+      <div class="modal-header">
+        <div class="modal-title">Edit Proyek</div>
+        <button class="modal-close" onclick="closeModal('editModal')">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form id="editForm">
+          <input type="hidden" id="editId">
+          <input type="hidden" id="editExistingImageUrl">
+          <div class="form-grid" style="margin-bottom:16px;">
+            <div class="form-group">
+              <label class="form-label" for="editTitle">Nama Proyek *</label>
+              <input type="text" id="editTitle" class="form-input" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="editCategory">Kategori *</label>
+              <select id="editCategory" class="form-select" required>
+                <option value="UI/UX">UI/UX Design</option>
+                <option value="Website">Website</option>
+                <option value="Data Science">Data Science</option>
+                <option value="Jaringan Komputer">Jaringan Komputer</option>
+              </select>
+            </div>
+            <div class="form-group full">
+              <label class="form-label" for="editDescription">Deskripsi *</label>
+              <textarea id="editDescription" class="form-textarea" required></textarea>
+            </div>
+            <div class="form-group full">
+              <label class="form-label" for="editLink">URL Proyek</label>
+              <input type="url" id="editLink" class="form-input">
+            </div>
+            <div class="form-group full">
+              <label class="form-label">Update Gambar (opsional)</label>
+              <div class="upload-section">
+                <input type="file" id="editImageFile" class="form-input" accept="image/*">
+                <div class="upload-divider">— atau —</div>
+                <input type="url" id="editImageUrl" class="form-input" placeholder="https://link-gambar.com">
+                <p class="form-hint" style="margin-top:6px;">* Biarkan kosong jika tidak ingin mengubah gambar.</p>
+              </div>
+            </div>
+          </div>
+          <div style="display:flex;gap:10px;justify-content:flex-end;">
+            <button type="button" class="btn btn-secondary" onclick="closeModal('editModal')">Batal</button>
+            <button type="submit" class="btn btn-primary" id="editSubmitBtn">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+              Simpan Perubahan
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════ EDIT CERT MODAL ══════════════════ -->
+  <div id="editCertModal" class="modal-overlay">
+    <div class="modal-box">
+      <div class="modal-header">
+        <div class="modal-title">Edit Sertifikat</div>
+        <button class="modal-close" onclick="closeModal('editCertModal')">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form id="editCertForm">
+          <input type="hidden" id="editCertId">
+          <input type="hidden" id="editCertExistingImageUrl">
+          <div class="form-group" style="margin-bottom:16px;">
+            <label class="form-label" for="editCertTitle">Nama Kursus / Sertifikat *</label>
+            <input type="text" id="editCertTitle" class="form-input" required>
+          </div>
+          <div class="form-group" style="margin-bottom:20px;">
+            <label class="form-label">Update Gambar (opsional)</label>
+            <div class="upload-section">
+              <input type="file" id="editCertImageFile" class="form-input" accept="image/*">
+              <div class="upload-divider">— atau —</div>
+              <input type="url" id="editCertImageUrl" class="form-input" placeholder="https://link-gambar.com">
+              <p class="form-hint" style="margin-top:6px;">* Biarkan kosong jika tidak ingin mengubah gambar.</p>
+            </div>
+          </div>
+          <div style="display:flex;gap:10px;justify-content:flex-end;">
+            <button type="button" class="btn btn-secondary" onclick="closeModal('editCertModal')">Batal</button>
+            <button type="submit" class="btn btn-primary" id="editCertSubmitBtn">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+              Simpan Perubahan
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Container -->
+  <div class="toast-container" id="toastContainer"></div>
+
+  <script>
+    /* ============================================================
+       GLOBAL FUNCTIONS - accessible via onclick="" attributes
+       ============================================================ */
+    function showToast(message, type) {
+      if (!type) type = 'info';
+      var container = document.getElementById('toastContainer');
+      if (!container) return;
+      var icons = {
+        success: '<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>',
+        error:   '<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>',
+        info:    '<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>'
+      };
+      var toast = document.createElement('div');
+      toast.className = 'toast ' + type;
+      toast.innerHTML = '<span class="toast-icon">' + (icons[type] || icons.info) + '</span><span class="toast-msg">' + message + '</span>';
+      container.appendChild(toast);
+      setTimeout(function() {
+        toast.style.opacity = '0'; toast.style.transform = 'translateX(20px)'; toast.style.transition = 'all 0.3s';
+        setTimeout(function() { if (toast.parentNode) toast.parentNode.removeChild(toast); }, 300);
+      }, 3500);
+    }
+
+    function closeModal(id) { var el = document.getElementById(id); if (el) el.classList.remove('active'); }
+    function openModal(id)  { var el = document.getElementById(id); if (el) el.classList.add('active'); }
+    function toggleSidebar() { var s = document.getElementById('sidebar'); if (s) s.classList.toggle('open'); }
+
+    var tabMeta = {
+      overview:       { label: 'Overview',   navId: 'nav-overview' },
+      projects:       { label: 'Proyek',     navId: 'nav-projects' },
+      certifications: { label: 'Sertifikat', navId: 'nav-certifications' }
+    };
+
+    function switchTab(tab) {
+      var tc = document.querySelectorAll('.tab-content');
+      for (var i=0;i<tc.length;i++) tc[i].classList.remove('active');
+      var ni = document.querySelectorAll('.nav-item');
+      for (var j=0;j<ni.length;j++) ni[j].classList.remove('active');
+      var tabEl = document.getElementById('tab-' + tab);
+      if (tabEl) tabEl.classList.add('active');
+      if (tabMeta[tab]) {
+        var navEl = document.getElementById(tabMeta[tab].navId);
+        if (navEl) navEl.classList.add('active');
+        var bc = document.getElementById('breadcrumbCurrent');
+        if (bc) bc.textContent = tabMeta[tab].label;
+      }
+      var sb = document.getElementById('sidebar');
+      if (sb) sb.classList.remove('open');
+    }
+
+    var currentProjectsList = [];
+    var currentCertsList    = [];
+
+    function loadAll() { loadProjects(); loadCertifications(); loadVisitors(); }
+
+    function loadProjects() {
+      google.script.run
+        .withSuccessHandler(function(projects) {
+          currentProjectsList = projects || [];
+          var c = document.getElementById('projectsContainer');
+          var count = currentProjectsList.length;
+          var sp = document.getElementById('statProjects');       if(sp) sp.textContent = count;
+          var bp = document.getElementById('sidebarBadgeProjects'); if(bp) bp.textContent = count;
+          var cb = document.getElementById('projectCountBadge');  if(cb) cb.textContent = count + ' item';
+          if (!c) return;
+          if (!count) {
+            c.innerHTML = '<div class="empty-state"><p>Belum ada proyek. Tambahkan proyek pertama Anda!</p></div>';
+            return;
+          }
+          c.innerHTML = '';
+          currentProjectsList.forEach(function(p) {
+            var item = document.createElement('div');
+            item.className = 'data-item';
+            var imgSrc = p.imageUrl || '';
+            if (imgSrc && imgSrc.indexOf('drive.google.com') !== -1) {
+              var m = imgSrc.match(/[?&]id=([^&]+)/) || imgSrc.match(/file\/d\/([^\/]+)/);
+              if (m) imgSrc = 'https://drive.google.com/thumbnail?id=' + m[1] + '&sz=w120';
+            }
+            var thumb = imgSrc
+              ? '<img class="data-thumb" src="' + imgSrc + '" alt="' + p.title + '" onerror="this.style.display=\'none\'">'
+              : '<div class="data-thumb-placeholder"></div>';
+            var link = p.link ? '<a href="' + p.link + '" target="_blank" style="color:var(--text-muted);font-size:11px;">Lihat</a>' : '';
+            item.innerHTML = thumb +
+              '<div class="data-info">' +
+                '<div class="data-name">' + (p.title||'-') + '</div>' +
+                '<div class="data-meta"><span class="data-badge">' + (p.category||'Lainnya') + '</span> ' + link + '</div>' +
+                '<div style="font-size:12px;color:var(--text-muted);margin-top:4px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:400px;">' + (p.description||'') + '</div>' +
+              '</div>' +
+              '<div class="data-actions">' +
+                '<button class="btn btn-secondary" data-edit-id="' + p.id + '" style="padding:7px 12px;font-size:12px;">Edit</button>' +
+                '<button class="btn btn-danger" data-del-id="' + p.id + '" style="padding:7px 12px;font-size:12px;">Hapus</button>' +
+              '</div>';
+            c.appendChild(item);
+          });
+        })
+        .withFailureHandler(function(err) { showToast('Gagal memuat proyek: ' + (err.message||err), 'error'); })
+        .getProjectsForDashboard();
+    }
+
+    function loadCertifications() {
+      google.script.run
+        .withSuccessHandler(function(certs) {
+          currentCertsList = certs || [];
+          var c = document.getElementById('certsContainer');
+          var count = currentCertsList.length;
+          var sc = document.getElementById('statCerts');           if(sc) sc.textContent = count;
+          var bc = document.getElementById('sidebarBadgeCerts');  if(bc) bc.textContent = count;
+          var cb = document.getElementById('certCountBadge');     if(cb) cb.textContent = count + ' item';
+          if (!c) return;
+          if (!count) {
+            c.innerHTML = '<div class="empty-state"><p>Belum ada sertifikat. Tambahkan sertifikat pertama Anda!</p></div>';
+            return;
+          }
+          c.innerHTML = '';
+          currentCertsList.forEach(function(p) {
+            var item = document.createElement('div');
+            item.className = 'data-item';
+            var imgSrc = p.imageUrl || '';
+            if (imgSrc && imgSrc.indexOf('drive.google.com') !== -1) {
+              var m = imgSrc.match(/[?&]id=([^&]+)/) || imgSrc.match(/file\/d\/([^\/]+)/);
+              if (m) imgSrc = 'https://drive.google.com/thumbnail?id=' + m[1] + '&sz=w120';
+            }
+            var thumb = imgSrc
+              ? '<img class="data-thumb" src="' + imgSrc + '" alt="' + p.title + '" style="object-fit:contain;background:var(--bg-base);padding:6px;" onerror="this.style.display=\'none\'">'
+              : '<div class="data-thumb-placeholder"></div>';
+            item.innerHTML = thumb +
+              '<div class="data-info"><div class="data-name">' + (p.title||'-') + '</div></div>' +
+              '<div class="data-actions">' +
+                '<button class="btn btn-secondary" data-edit-cert-id="' + p.id + '" style="padding:7px 12px;font-size:12px;">Edit</button>' +
+                '<button class="btn btn-danger" data-del-cert-id="' + p.id + '" style="padding:7px 12px;font-size:12px;">Hapus</button>' +
+              '</div>';
+            c.appendChild(item);
+          });
+        })
+        .withFailureHandler(function(err) { showToast('Gagal memuat sertifikat: ' + (err.message||err), 'error'); })
+        .getCertificationsForDashboard();
+    }
+
+    function loadVisitors() {
+      google.script.run
+        .withSuccessHandler(function(data) {
+          var el = document.getElementById('statVisitors');
+          if (el) el.textContent = (data && data.count) ? data.count : 0;
+        })
+        .getVisitorStats();
+    }
+
+    function openEditModal(id) {
+      var p = null;
+      for (var i=0; i<currentProjectsList.length; i++) {
+        if (String(currentProjectsList[i].id) === String(id)) { p = currentProjectsList[i]; break; }
+      }
+      if (!p) { showToast('Proyek tidak ditemukan!', 'error'); return; }
+      document.getElementById('editId').value               = p.id;
+      document.getElementById('editTitle').value            = p.title || '';
+      document.getElementById('editCategory').value         = p.category || 'UI/UX';
+      document.getElementById('editDescription').value      = p.description || '';
+      document.getElementById('editLink').value             = p.link || '';
+      document.getElementById('editExistingImageUrl').value = p.imageUrl || '';
+      document.getElementById('editImageUrl').value         = '';
+      document.getElementById('editImageFile').value        = '';
+      openModal('editModal');
+    }
+
+    function openEditCertModal(id) {
+      var p = null;
+      for (var i=0; i<currentCertsList.length; i++) {
+        if (String(currentCertsList[i].id) === String(id)) { p = currentCertsList[i]; break; }
+      }
+      if (!p) { showToast('Sertifikat tidak ditemukan!', 'error'); return; }
+      document.getElementById('editCertId').value               = p.id;
+      document.getElementById('editCertTitle').value            = p.title || '';
+      document.getElementById('editCertExistingImageUrl').value = p.imageUrl || '';
+      document.getElementById('editCertImageUrl').value         = '';
+      document.getElementById('editCertImageFile').value        = '';
+      openModal('editCertModal');
+    }
+
+    /* ============================================================
+       window.onload - SEMUA addEventListener di sini
+       Ini paling aman di GAS HtmlService iframe sandbox
+       ============================================================ */
+    window.onload = function() {
+      /* Spin keyframe */
+      var st = document.createElement('style');
+      st.textContent = '@keyframes spin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}';
+      document.head.appendChild(st);
+
+      /* Close modal on overlay click */
+      var overlays = document.querySelectorAll('.modal-overlay');
+      for (var oi=0; oi<overlays.length; oi++) {
+        (function(ov) {
+          ov.addEventListener('click', function(e) { if (e.target === ov) ov.classList.remove('active'); });
+        })(overlays[oi]);
+      }
+
+      /* Event delegation: Projects container (edit/delete buttons are dynamic) */
+      var pc = document.getElementById('projectsContainer');
+      if (pc) {
+        pc.addEventListener('click', function(e) {
+          var btn = e.target;
+          while (btn && btn !== pc && btn.tagName !== 'BUTTON') btn = btn.parentNode;
+          if (!btn || btn.tagName !== 'BUTTON') return;
+          var eid = btn.getAttribute('data-edit-id');
+          var did = btn.getAttribute('data-del-id');
+          if (eid) { openEditModal(eid); }
+          if (did && confirm('Yakin ingin menghapus proyek ini?')) {
+            google.script.run
+              .withSuccessHandler(function(r) { showToast(r.message, r.success ? 'success' : 'error'); loadAll(); })
+              .withFailureHandler(function(e) { showToast('Error: ' + e.message, 'error'); })
+              .deleteProject(did);
+          }
+        });
+      }
+
+      /* Event delegation: Certs container */
+      var cc = document.getElementById('certsContainer');
+      if (cc) {
+        cc.addEventListener('click', function(e) {
+          var btn = e.target;
+          while (btn && btn !== cc && btn.tagName !== 'BUTTON') btn = btn.parentNode;
+          if (!btn || btn.tagName !== 'BUTTON') return;
+          var eid = btn.getAttribute('data-edit-cert-id');
+          var did = btn.getAttribute('data-del-cert-id');
+          if (eid) { openEditCertModal(eid); }
+          if (did && confirm('Yakin ingin menghapus sertifikat ini?')) {
+            google.script.run
+              .withSuccessHandler(function(r) { showToast(r.message, r.success ? 'success' : 'error'); loadAll(); })
+              .withFailureHandler(function(e) { showToast('Error: ' + e.message, 'error'); })
+              .deleteCertification(did);
+          }
+        });
+      }
+
+      /* Project Add Form */
+      var pf = document.getElementById('projectForm');
+      if (pf) pf.addEventListener('submit', function(e) {
+        e.preventDefault();
+        var btn = document.getElementById('submitBtn');
+        var orig = btn.innerHTML;
+        btn.disabled = true; btn.innerHTML = 'Mengupload...';
+        showToast('Mengirim data proyek...', 'info');
+        var fi = document.getElementById('imageFile').files[0];
+        var data = {
+          title:       document.getElementById('title').value,
+          description: document.getElementById('description').value,
+          category:    document.getElementById('category').value,
+          link:        document.getElementById('link').value,
+          imageUrl:    document.getElementById('imageUrl').value
+        };
+        function doSend() {
+          google.script.run
+            .withSuccessHandler(function(r) {
+              showToast(r.message, r.success ? 'success' : 'error');
+              btn.disabled = false; btn.innerHTML = orig;
+              if (r.success) { pf.reset(); loadAll(); }
+            })
+            .withFailureHandler(function(er) { showToast('Error: ' + er.message, 'error'); btn.disabled = false; btn.innerHTML = orig; })
+            .addProjectFromDashboard(data);
+        }
+        if (fi) { var rd = new FileReader(); rd.onload = function() { data.imageFile = {data: rd.result.split(',')[1], mimeType: fi.type, filename: fi.name}; doSend(); }; rd.readAsDataURL(fi); }
+        else doSend();
+      });
+
+      /* Project Edit Form */
+      var ef = document.getElementById('editForm');
+      if (ef) ef.addEventListener('submit', function(e) {
+        e.preventDefault();
+        var btn = document.getElementById('editSubmitBtn');
+        btn.disabled = true; btn.textContent = 'Menyimpan...';
+        var fi = document.getElementById('editImageFile').files[0];
+        var id = document.getElementById('editId').value;
+        var data = {
+          title:            document.getElementById('editTitle').value,
+          description:      document.getElementById('editDescription').value,
+          category:         document.getElementById('editCategory').value,
+          link:             document.getElementById('editLink').value,
+          imageUrl:         document.getElementById('editImageUrl').value,
+          existingImageUrl: document.getElementById('editExistingImageUrl').value
+        };
+        function doSend() {
+          google.script.run
+            .withSuccessHandler(function(r) {
+              showToast(r.message, r.success ? 'success' : 'error');
+              btn.disabled = false; btn.textContent = 'Simpan Perubahan';
+              if (r.success) { closeModal('editModal'); ef.reset(); loadAll(); }
+            })
+            .withFailureHandler(function(er) { showToast('Error: ' + er.message, 'error'); btn.disabled = false; btn.textContent = 'Simpan Perubahan'; })
+            .updateProjectFull(id, data);
+        }
+        if (fi) { var rd = new FileReader(); rd.onload = function() { data.imageFile = {data: rd.result.split(',')[1], mimeType: fi.type, filename: fi.name}; doSend(); }; rd.readAsDataURL(fi); }
+        else doSend();
+      });
+
+      /* Cert Add Form */
+      var cf = document.getElementById('certForm');
+      if (cf) cf.addEventListener('submit', function(e) {
+        e.preventDefault();
+        var btn = document.getElementById('certSubmitBtn');
+        btn.disabled = true; btn.textContent = 'Mengupload...';
+        showToast('Mengirim data sertifikat...', 'info');
+        var fi = document.getElementById('certImageFile').files[0];
+        var data = { title: document.getElementById('certTitle').value, imageUrl: document.getElementById('certImageUrl').value };
+        function doSend() {
+          google.script.run
+            .withSuccessHandler(function(r) {
+              showToast(r.message, r.success ? 'success' : 'error');
+              btn.disabled = false; btn.textContent = 'Upload Sertifikat';
+              if (r.success) { cf.reset(); loadAll(); }
+            })
+            .withFailureHandler(function(er) { showToast('Error: ' + er.message, 'error'); btn.disabled = false; btn.textContent = 'Upload Sertifikat'; })
+            .addCertificationFromDashboard(data);
+        }
+        if (fi) { var rd = new FileReader(); rd.onload = function() { data.imageFile = {data: rd.result.split(',')[1], mimeType: fi.type, filename: fi.name}; doSend(); }; rd.readAsDataURL(fi); }
+        else doSend();
+      });
+
+      /* Cert Edit Form */
+      var ecf = document.getElementById('editCertForm');
+      if (ecf) ecf.addEventListener('submit', function(e) {
+        e.preventDefault();
+        var btn = document.getElementById('editCertSubmitBtn');
+        btn.disabled = true; btn.textContent = 'Menyimpan...';
+        var fi = document.getElementById('editCertImageFile').files[0];
+        var id = document.getElementById('editCertId').value;
+        var data = {
+          title:            document.getElementById('editCertTitle').value,
+          imageUrl:         document.getElementById('editCertImageUrl').value,
+          existingImageUrl: document.getElementById('editCertExistingImageUrl').value
+        };
+        function doSend() {
+          google.script.run
+            .withSuccessHandler(function(r) {
+              showToast(r.message, r.success ? 'success' : 'error');
+              btn.disabled = false; btn.textContent = 'Simpan Perubahan';
+              if (r.success) { closeModal('editCertModal'); ecf.reset(); loadAll(); }
+            })
+            .withFailureHandler(function(er) { showToast('Error: ' + er.message, 'error'); btn.disabled = false; btn.textContent = 'Simpan Perubahan'; })
+            .updateCertificationFull(id, data);
+        }
+        if (fi) { var rd = new FileReader(); rd.onload = function() { data.imageFile = {data: rd.result.split(',')[1], mimeType: fi.type, filename: fi.name}; doSend(); }; rd.readAsDataURL(fi); }
+        else doSend();
+      });
+
+      /* Load all data */
+      loadAll();
+    };
+  </script>
+</body>
+</html>
