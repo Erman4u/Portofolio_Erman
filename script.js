@@ -24,7 +24,9 @@ const ICONS = {
     moon: '<path d="M20.985 12.486a9 9 0 1 1-9.473-9.472c.405-.022.617.46.402.803a6 6 0 0 0 8.268 8.268c.344-.215.825-.004.803.401" />',
     sun: '<circle cx="12" cy="12" r="4" /><path d="M12 2v2" /><path d="M12 20v2" /><path d="m4.93 4.93 1.41 1.41" /><path d="m17.66 17.66 1.41 1.41" /><path d="M2 12h2" /><path d="M20 12h2" /><path d="m6.34 17.66-1.41 1.41" /><path d="m19.07 4.93-1.41 1.41" />',
     loader: '<path d="M12 2v4" /><path d="m16.2 7.8 2.9-2.9" /><path d="M18 12h4" /><path d="m16.2 16.2 2.9 2.9" /><path d="M12 18v4" /><path d="m4.9 19.1 2.9-2.9" /><path d="M2 12h4" /><path d="m4.9 4.9 2.9 2.9" />',
-    'external-link': '<path d="M15 3h6v6" /><path d="M10 14 21 3" /><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />'
+    'external-link': '<path d="M15 3h6v6" /><path d="M10 14 21 3" /><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />',
+    menu: '<path d="M4 5h16" /><path d="M4 12h16" /><path d="M4 19h16" />',
+    x: '<path d="M18 6 6 18" /><path d="m6 6 12 12" />'
 };
 // Returns a full inline <svg>...</svg> string for a given icon name + extra attrs (e.g. class/style)
 function iconSvg(name, extraAttrs = '') {
@@ -200,6 +202,51 @@ function initThemeToggle() {
 
         // Update icon
         icon.innerHTML = ICONS[next === 'dark' ? 'moon' : 'sun'];
+    });
+}
+
+// ═══════════════════════════════════════════
+// 5b. MOBILE NAV (hamburger toggle)
+// On mobile, nav links are hidden until this button is tapped —
+// see the @media (max-width: 768px) rules for #mainHeader.nav-open.
+// ═══════════════════════════════════════════
+function initNavToggle() {
+    const btn = document.getElementById('navToggle');
+    const header = document.getElementById('mainHeader');
+    const nav = document.getElementById('mainNav');
+    const icon = document.getElementById('navToggleIcon');
+    if (!btn || !header || !nav || !icon) return;
+
+    const closeMenu = () => {
+        header.classList.remove('nav-open');
+        btn.setAttribute('aria-expanded', 'false');
+        icon.innerHTML = ICONS.menu;
+    };
+    const openMenu = () => {
+        header.classList.add('nav-open');
+        btn.setAttribute('aria-expanded', 'true');
+        icon.innerHTML = ICONS.x;
+    };
+
+    btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        header.classList.contains('nav-open') ? closeMenu() : openMenu();
+    });
+
+    // Tapping a link navigates the single-page anchor — close the menu after
+    nav.querySelectorAll('.nav-btn').forEach(link => link.addEventListener('click', closeMenu));
+
+    // Tapping outside the header closes it
+    document.addEventListener('click', (e) => {
+        if (header.classList.contains('nav-open') && !header.contains(e.target)) closeMenu();
+    });
+
+    // Escape closes it and returns focus to the toggle button
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && header.classList.contains('nav-open')) {
+            closeMenu();
+            btn.focus();
+        }
     });
 }
 
@@ -407,7 +454,7 @@ function renderCertifications(certs) {
         }
 
         div.innerHTML = `
-            <div class="project-img-container" style="height:220px; border-bottom: 1px solid var(--border-dim);">
+            <div class="project-img-container cert-img" style="height:220px; border-bottom: 1px solid var(--border-dim);">
                 <img src="${rawImg}" alt="${cert.title}" class="project-img" style="object-fit:contain; background:rgba(0,0,0,0.5); padding:15px;" onerror="this.onerror=null; this.src='img/project_fallback.png';">
             </div>
             <div class="project-info" style="padding: 20px; flex-grow:1; display:flex; align-items:center; justify-content:center;">
@@ -570,6 +617,7 @@ document.addEventListener('DOMContentLoaded', () => {
     initScrollProgress();
     initScrollReveal();
     initThemeToggle();
+    initNavToggle();
     initSmoothScroll();
     initContactForm();
     initDownloadCV();
